@@ -1,6 +1,8 @@
 defmodule SpecificationTest do
   use ExUnit.Case
 
+  alias Specification.Rule
+
   import Specification
 
   doctest Specification
@@ -48,6 +50,60 @@ defmodule SpecificationTest do
 
     test "should not satisfy with a function returning an error result" do
       assert satisfies?("", &{:error, &1}) == false
+    end
+  end
+
+  describe ".satisfies?(:foo, <specifications-linked-with-and>)" do
+    test "should satisfy with two functions returning true" do
+      specs = Rule.and(fn _ -> true end, fn _ -> true end)
+
+      assert satisfies?(:foo, specs) == true
+    end
+
+    test "should not satisfy with two functions returning false" do
+      specs = Rule.and(fn _ -> false end, fn _ -> false end)
+
+      assert satisfies?(:foo, specs) == false
+    end
+
+    test "should not satisfy with one function returning false and one returning true" do
+      specs = Rule.and(fn _ -> false end, fn _ -> true end)
+
+      assert satisfies?(:foo, specs) == false
+    end
+  end
+
+  describe ".satisfies?(:foo, <specifications-linked-with-or>)" do
+    test "should satisfy with two functions returning true" do
+      specs = Rule.or(fn _ -> true end, fn _ -> true end)
+
+      assert satisfies?(:foo, specs) == true
+    end
+
+    test "should not satisfy with two functions returning false" do
+      specs = Rule.or(fn _ -> false end, fn _ -> false end)
+
+      assert satisfies?(:foo, specs) == false
+    end
+
+    test "should satisfy with one function returning false and one returning true" do
+      specs = Rule.or(fn _ -> false end, fn _ -> true end)
+
+      assert satisfies?(:foo, specs) == true
+    end
+  end
+
+  describe ".satisfies?(:foo, <specification-wrapped-in-not>)" do
+    test "should satisfy with a function returning false" do
+      specs = Rule.not(fn _ -> false end)
+
+      assert satisfies?(:foo, specs) == true
+    end
+
+    test "should not satisfy with a function returning true" do
+      specs = Rule.not(fn _ -> true end)
+
+      assert satisfies?(:foo, specs) == false
     end
   end
 end

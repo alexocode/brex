@@ -26,4 +26,14 @@ defmodule Specification do
   def satisfies?(value, rules) when is_list(rules) do
     Enum.all?(rules, &satisfies?(value, &1))
   end
+
+  def satisfies?(value, rule) when is_tuple(rule) do
+    case rule do
+      {:or, left, right} ->
+        satisfies?(value, left) or satisfies?(value, right)
+
+      {:not, negate} ->
+        not satisfies?(value, negate)
+    end
+  end
 end

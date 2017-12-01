@@ -3,16 +3,27 @@ defmodule Specification do
   Documentation for Specification.
   """
 
-  @doc """
-  Hello world.
+  def satisfies?(_value, []), do: true
 
-  ## Examples
+  def satisfies?(value, rule) when is_function(rule, 1) do
+    case rule.(value) do
+      boolean when is_boolean(boolean) ->
+        boolean
 
-      iex> Specification.hello
-      :world
+      # OK Result
+      :ok ->
+        true
 
-  """
-  def hello do
-    :world
+      {:ok, _} ->
+        true
+
+      # Error result
+      {:error, _} ->
+        false
+    end
+  end
+
+  def satisfies?(value, rules) when is_list(rules) do
+    Enum.all?(rules, &satisfies?(value, &1))
   end
 end

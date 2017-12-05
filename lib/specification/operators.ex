@@ -1,4 +1,4 @@
-defmodule Specification.Operators do
+defmodule Specification.Operator do
   @moduledoc false
 
   rules = [:all, :any, :negate]

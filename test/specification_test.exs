@@ -1,7 +1,7 @@
 defmodule SpecificationTest do
   use ExUnit.Case
 
-  alias Specification.Operators
+  alias Specification.Operator
 
   import Specification
 
@@ -55,19 +55,19 @@ defmodule SpecificationTest do
 
   describe ".satisfies?(<rules-linked-with-all>, :foo)" do
     test "should satisfy with two functions returning true" do
-      specs = Operators.all(fn _ -> true end, fn _ -> true end)
+      specs = Operator.all(fn _ -> true end, fn _ -> true end)
 
       assert satisfies?(specs, :foo) == true
     end
 
     test "should not satisfy with two functions returning false" do
-      specs = Operators.all(fn _ -> false end, fn _ -> false end)
+      specs = Operator.all(fn _ -> false end, fn _ -> false end)
 
       assert satisfies?(specs, :foo) == false
     end
 
     test "should not satisfy with one function returning false and one returning true" do
-      specs = Operators.all(fn _ -> false end, fn _ -> true end)
+      specs = Operator.all(fn _ -> false end, fn _ -> true end)
 
       assert satisfies?(specs, :foo) == false
     end
@@ -75,19 +75,19 @@ defmodule SpecificationTest do
 
   describe ".satisfies?(<rules-linked-with-any>, :foo)" do
     test "should satisfy with two functions returning true" do
-      specs = Operators.any(fn _ -> true end, fn _ -> true end)
+      specs = Operator.any(fn _ -> true end, fn _ -> true end)
 
       assert satisfies?(specs, :foo) == true
     end
 
     test "should not satisfy with two functions returning false" do
-      specs = Operators.any(fn _ -> false end, fn _ -> false end)
+      specs = Operator.any(fn _ -> false end, fn _ -> false end)
 
       assert satisfies?(specs, :foo) == false
     end
 
     test "should satisfy with one function returning false and one returning true" do
-      specs = Operators.any(fn _ -> false end, fn _ -> true end)
+      specs = Operator.any(fn _ -> false end, fn _ -> true end)
 
       assert satisfies?(specs, :foo) == true
     end
@@ -95,13 +95,13 @@ defmodule SpecificationTest do
 
   describe ".satisfies?(<rule-wrapped-in-negate>, :foo)" do
     test "should satisfy with a function returning false" do
-      specs = Operators.negate(fn _ -> false end)
+      specs = Operator.negate(fn _ -> false end)
 
       assert satisfies?(specs, :foo) == true
     end
 
     test "should not satisfy with a function returning true" do
-      specs = Operators.negate(fn _ -> true end)
+      specs = Operator.negate(fn _ -> true end)
 
       assert satisfies?(specs, :foo) == false
     end

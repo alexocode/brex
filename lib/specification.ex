@@ -15,6 +15,10 @@ defmodule Specification do
     |> Enum.map(&do_evaluate(&1, value))
   end
 
+  defp do_evaluate(rule, value) when is_atom(rule) do
+    Specification.Rule.evaluate(rule, value)
+  end
+
   defp do_evaluate(rule, value) when is_function(rule, 1) do
     rule.(value)
   end

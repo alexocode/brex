@@ -19,7 +19,7 @@ defmodule Specification do
     rule.(value)
   end
 
-  for operator <- [:all, :any, :inverse] do
+  for operator <- [:all, :any, :negate] do
     defp do_evaluate({unquote(operator), rules}, value) do
       {unquote(operator), evaluate(rules, value)}
     end
@@ -46,7 +46,7 @@ defmodule Specification do
       {:any, results} ->
         Enum.any?(results, &passed_evaluation?/1)
 
-      {:inverse, results} ->
+      {:negate, results} ->
         not Enum.all?(results, &passed_evaluation?/1)
     end
   end

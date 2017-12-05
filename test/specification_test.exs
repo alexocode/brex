@@ -93,15 +93,15 @@ defmodule SpecificationTest do
     end
   end
 
-  describe ".satisfies?(<specification-wrapped-in-not>, :foo)" do
+  describe ".satisfies?(<specification-wrapped-in-negate>, :foo)" do
     test "should satisfy with a function returning false" do
-      specs = Operators.inverse(fn _ -> false end)
+      specs = Operators.negate(fn _ -> false end)
 
       assert satisfies?(specs, :foo) == true
     end
 
     test "should not satisfy with a function returning true" do
-      specs = Operators.inverse(fn _ -> true end)
+      specs = Operators.negate(fn _ -> true end)
 
       assert satisfies?(specs, :foo) == false
     end

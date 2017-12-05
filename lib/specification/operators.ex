@@ -1,7 +1,7 @@
 defmodule Specification.Operators do
   @moduledoc false
 
-  rules = [:all, :any, :inverse]
+  rules = [:all, :any, :negate]
 
   for rule <- rules do
     def unquote(rule)(rules) do

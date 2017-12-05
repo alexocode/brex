@@ -25,7 +25,7 @@ defmodule Specification do
     end
   end
 
-  defp do_evaluate(rule, value) do
+  defp do_evaluate(rule, _value) do
     raise ArgumentError, "Don't know how to evaluate rule `#{inspect(rule)}`!"
   end
 

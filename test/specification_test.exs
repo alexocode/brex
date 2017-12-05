@@ -7,7 +7,7 @@ defmodule SpecificationTest do
 
   doctest Specification
 
-  describe ".satisfies, <specifications>?(\"\")" do
+  describe ".satisfies?(<rules>, \"\")" do
     # Positive
 
     test "should satisfy with an empty specification set" do
@@ -53,7 +53,7 @@ defmodule SpecificationTest do
     end
   end
 
-  describe ".satisfies?(<specifications-linked-with-and>, :foo)" do
+  describe ".satisfies?(<rules-linked-with-all>, :foo)" do
     test "should satisfy with two functions returning true" do
       specs = Operators.all(fn _ -> true end, fn _ -> true end)
 
@@ -73,7 +73,7 @@ defmodule SpecificationTest do
     end
   end
 
-  describe ".satisfies?(<specifications-linked-with-or>, :foo)" do
+  describe ".satisfies?(<rules-linked-with-any>, :foo)" do
     test "should satisfy with two functions returning true" do
       specs = Operators.any(fn _ -> true end, fn _ -> true end)
 
@@ -93,7 +93,7 @@ defmodule SpecificationTest do
     end
   end
 
-  describe ".satisfies?(<specification-wrapped-in-negate>, :foo)" do
+  describe ".satisfies?(<rule-wrapped-in-negate>, :foo)" do
     test "should satisfy with a function returning false" do
       specs = Operators.negate(fn _ -> false end)
 

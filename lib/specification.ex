@@ -1,39 +1,53 @@
 defmodule Specification do
   @moduledoc """
-  Documentation for Specification.
+  Documentation for Specification
   """
 
-  def satisfies?(_value, []), do: true
+  def satisfies?(rules, value) do
+    rules
+    |> evaluate(value)
+    |> passed_evaluation?()
+  end
 
-  def satisfies?(value, rule) when is_function(rule, 1) do
-    case rule.(value) do
-      boolean when is_boolean(boolean) ->
-        boolean
+  def evaluate(rules, value) do
+    rules
+    |> List.wrap()
+    |> Enum.map(&do_evaluate(&1, value))
+  end
 
-      # OK Result
-      :ok ->
-        true
+  defp do_evaluate(rule, value) when is_function(rule, 1) do
+    rule.(value)
+  end
 
-      {:ok, _} ->
-        true
-
-      # Error result
-      {:error, _} ->
-        false
+  for operator <- [:all, :any, :inverse] do
+    defp do_evaluate({unquote(operator), rules}, value) do
+      {unquote(operator), evaluate(rules, value)}
     end
   end
 
-  def satisfies?(value, rules) when is_list(rules) do
-    Enum.all?(rules, &satisfies?(value, &1))
+  defp do_evaluate(rule, value) do
+    raise ArgumentError, "Don't know how to evaluate rule `#{inspect(rule)}`!"
   end
 
-  def satisfies?(value, rule) when is_tuple(rule) do
-    case rule do
-      {:or, left, right} ->
-        satisfies?(value, left) or satisfies?(value, right)
+  defp passed_evaluation?(results) when is_list(results) do
+    Enum.all?(results, &passed_evaluation?/1)
+  end
 
-      {:not, negate} ->
-        not satisfies?(value, negate)
+  defp passed_evaluation?(boolean) when is_boolean(boolean), do: boolean
+  defp passed_evaluation?(:ok), do: true
+  defp passed_evaluation?({:ok, _}), do: true
+  defp passed_evaluation?({:error, _}), do: false
+
+  defp passed_evaluation?(result) when is_tuple(result) do
+    case result do
+      {:all, results} ->
+        Enum.all?(results, &passed_evaluation?/1)
+
+      {:any, results} ->
+        Enum.any?(results, &passed_evaluation?/1)
+
+      {:inverse, results} ->
+        not Enum.all?(results, &passed_evaluation?/1)
     end
   end
 end

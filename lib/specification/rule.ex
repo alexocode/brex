@@ -9,7 +9,7 @@ defmodule Specification.Rule do
 
   def evaluate(rule, value) do
     if is_rule?(rule) do
-      rule.evaluate(value)
+      do_evaluate(rule, value)
     else
       raise ArgumentError, "Invalid rule: #{inspect(rule)}"
     end
@@ -21,5 +21,13 @@ defmodule Specification.Rule do
 
   def is_rule(_rule) do
     false
+  end
+
+  defp do_evaluate(rule, value) do
+    rule.evaluate(value)
+  catch
+    error -> {:error, error}
+  rescue
+    error -> {:error, error}
   end
 end

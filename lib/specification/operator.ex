@@ -1,5 +1,11 @@
 defmodule Specification.Operator do
-  @moduledoc false
+  @moduledoc """
+  Operators to link rules with boolean logic.
+
+  - `all` all given rules have to be valid (`and`)
+  - `any` one given rule has to be valid (`or`)
+  - `negate` no given rule has to be valid (`not`)
+  """
 
   @type t :: {:all, value()} | {:any, value()} | {:negate, value()}
   @type value :: Specifiation.Types.rules()

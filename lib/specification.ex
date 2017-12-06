@@ -3,8 +3,11 @@ defmodule Specification do
   Documentation for Specification
   """
 
-  defdelegate evaluate(rules, value), to: Specification.Evaluation.Rule
-  defdelegate passed_evaluation?(results), to: Specification.Evaluation.Result, as: :evaluate
+  alias Specification.ResultFormatter, as: Formatter
+
+  defdelegate evaluate(rules, value), to: Specification.Evaluator
+
+  defdelegate passed_evaluation?(results), to: Formatter.Boolean, as: :format
 
   def satisfies?(rules, value) do
     rules

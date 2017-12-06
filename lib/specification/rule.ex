@@ -1,9 +1,11 @@
 defmodule Specification.Rule do
   @moduledoc false
 
-  @type result :: boolean() | :ok | {:ok, any} | {:error, any}
+  alias Specification.Types
 
-  @callback evaluate(value :: any) :: result()
+  @type t :: module()
+
+  @callback evaluate(Types.value()) :: Types.result()
 
   def evaluate(rule, value) do
     if is_rule?(rule) do

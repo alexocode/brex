@@ -1,9 +1,11 @@
-defmodule Specification.Evaluation.Result do
+defmodule Specification.ResultFormatter.Boolean do
   @moduledoc false
 
-  def evaluate(rule_and_result) do
-    rule_and_result
-    |> List.wrap()
+  use Specification.ResultFormatter
+
+  @impl true
+  def format(rules_and_results) do
+    rules_and_results
     |> Enum.map(&extract_result/1)
     |> Enum.all?(&positive_result?/1)
   end

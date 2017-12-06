@@ -1,8 +1,11 @@
-defmodule Specification.Evaluation.Rule do
+defmodule Specification.Evaluator do
   @moduledoc false
 
   import Specification, only: [passed_evaluation?: 1]
 
+  alias Specification.Types
+
+  @spec evaluate(Types.rules() | Types.rule(), Types.value()) :: Types.results()
   def evaluate(rules, value) when is_list(rules) do
     Enum.map(rules, &evaluate(&1, value))
   end

@@ -1,9 +1,10 @@
 defmodule Specification.Operator do
   @moduledoc false
 
-  rules = [:all, :any, :negate]
+  @type t :: {:all, value()} | {:any, value()} | {:negate, value()}
+  @type value :: Specifiation.Types.rules()
 
-  for rule <- rules do
+  for rule <- [:all, :any, :negate] do
     def unquote(rule)(rules) do
       {unquote(rule), List.wrap(rules)}
     end

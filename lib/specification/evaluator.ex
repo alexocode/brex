@@ -74,7 +74,7 @@ defmodule Specification.Evaluator do
     def evaluate({unquote(operator), rules}, value) do
       evaluated_rules = evaluate(rules, value)
       operator_result = {unquote(operator), evaluated_rules}
-      aggregated_result = aggregate_result(operator_result)
+      aggregated_result = aggregate_operator_result(operator_result)
 
       {operator_result, aggregated_result}
     end
@@ -84,7 +84,15 @@ defmodule Specification.Evaluator do
     raise ArgumentError, "Don't know how to evaluate rule `#{inspect(rule)}`!"
   end
 
-  defp aggregate_result({:all, results}), do: Enum.all?(results, &passed_evaluation?/1)
-  defp aggregate_result({:any, results}), do: Enum.any?(results, &passed_evaluation?/1)
-  defp aggregate_result({:negate, results}), do: not Enum.all?(results, &passed_evaluation?/1)
+  defp aggregate_operator_result({:all, results}) do
+    Enum.all?(results, &passed_evaluation?/1)
+  end
+
+  defp aggregate_operator_result({:any, results}) do
+    Enum.any?(results, &passed_evaluation?/1)
+  end
+
+  defp aggregate_operator_result({:negate, results}) do
+    not Enum.all?(results, &passed_evaluation?/1)
+  end
 end

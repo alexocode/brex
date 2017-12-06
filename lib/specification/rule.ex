@@ -1,5 +1,8 @@
 defmodule Specification.Rule do
-  @moduledoc false
+  @moduledoc """
+  A behaviour specifying an `evaluate/1` function, also provides helpful
+  functions to evaluate such module based rules.
+  """
 
   alias Specification.Types
 
@@ -7,7 +10,7 @@ defmodule Specification.Rule do
 
   @callback evaluate(Types.value()) :: Types.result()
 
-  def evaluate(rule, value) do
+  def call_evaluate(rule, value) do
     if is_rule?(rule) do
       do_evaluate(rule, value)
     else

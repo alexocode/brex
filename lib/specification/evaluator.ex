@@ -54,7 +54,7 @@ defmodule Specification.Evaluator do
   end
 
   def evaluate(rule, value) when is_atom(rule) do
-    {rule, Specification.Rule.evaluate(rule, value)}
+    {rule, Specification.Rule.call_evaluate(rule, value)}
   end
 
   def evaluate(rule, value) when is_function(rule, 1) do

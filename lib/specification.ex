@@ -16,16 +16,20 @@ defmodule Specification do
   end
 
   defp do_evaluate(rule, value) when is_atom(rule) do
-    Specification.Rule.evaluate(rule, value)
+    {rule, Specification.Rule.evaluate(rule, value)}
   end
 
   defp do_evaluate(rule, value) when is_function(rule, 1) do
-    rule.(value)
+    {rule, rule.(value)}
   end
 
   for operator <- [:all, :any, :negate] do
     defp do_evaluate({unquote(operator), rules}, value) do
-      {unquote(operator), evaluate(rules, value)}
+      evaluated_rules = evaluate(rules, value)
+      operator_result = {unquote(operator), evaluated_rules}
+      aggregated_result = aggregate_result(operator_result)
+
+      {operator_result, aggregated_result}
     end
   end
 
@@ -33,25 +37,27 @@ defmodule Specification do
     raise ArgumentError, "Don't know how to evaluate rule `#{inspect(rule)}`!"
   end
 
-  defp passed_evaluation?(results) when is_list(results) do
-    Enum.all?(results, &passed_evaluation?/1)
+  defp aggregate_result({:all, results}), do: Enum.all?(results, &passed_evaluation?/1)
+  defp aggregate_result({:any, results}), do: Enum.any?(results, &passed_evaluation?/1)
+  defp aggregate_result({:negate, results}), do: not Enum.all?(results, &passed_evaluation?/1)
+
+  def passed_evaluation?(result) do
+    result
+    |> List.wrap()
+    |> Enum.map(&extract_result/1)
+    |> Enum.all?(&positive_result?/1)
   end
 
-  defp passed_evaluation?(boolean) when is_boolean(boolean), do: boolean
-  defp passed_evaluation?(:ok), do: true
-  defp passed_evaluation?({:ok, _}), do: true
-  defp passed_evaluation?({:error, _}), do: false
+  defp extract_result({_rule, result}), do: result
 
-  defp passed_evaluation?(result) when is_tuple(result) do
-    case result do
-      {:all, results} ->
-        Enum.all?(results, &passed_evaluation?/1)
-
-      {:any, results} ->
-        Enum.any?(results, &passed_evaluation?/1)
-
-      {:negate, results} ->
-        not Enum.all?(results, &passed_evaluation?/1)
-    end
+  defp extract_result(other) do
+    raise ArgumentError,
+          "Invalid evaluation result! Expects a list of two value tuples like `{MyCustomRule, true}`. " <>
+            "Instead received: #{inspect(other)}"
   end
+
+  defp positive_result?(boolean) when is_boolean(boolean), do: boolean
+  defp positive_result?(:ok), do: true
+  defp positive_result?({:ok, _}), do: true
+  defp positive_result?({:error, _}), do: false
 end

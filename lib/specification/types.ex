@@ -1,5 +1,5 @@
 defmodule Specification.Types do
-  @moduledoc false
+  @moduledoc "Specifies types relevant to the Specification modules"
 
   @type rules :: list(rule())
   @type rule :: (value() -> result_value()) | Specification.Rule.t() | operator()

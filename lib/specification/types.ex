@@ -2,7 +2,8 @@ defmodule Specification.Types do
   @moduledoc "Specifies types relevant to the Specification modules"
 
   @type rules :: list(rule())
-  @type rule :: (value() -> result_value()) | Specification.Rule.t() | operator()
+  @type rule :: rule_fn() | Specification.Rule.t() | operator()
+  @type rule_fn :: (value() -> result_value())
 
   @type operator :: Specification.Operator.t()
 

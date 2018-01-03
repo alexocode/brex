@@ -19,4 +19,33 @@ defmodule Specification do
     |> evaluate(value)
     |> passed_evaluation?()
   end
+
+  @doc """
+  Returns the number of clauses this rule has.
+
+  ## Examples
+
+      iex> Specification.number_of_clauses([])
+      0
+
+      iex> rules = [fn _ -> true end]
+      iex> Specification.number_of_clauses(rules)
+      1
+
+      iex> rules = [fn _ -> true end, Specification.Operator.any(fn _ -> false end, fn _ -> true end)]
+      iex> Specification.number_of_clauses(rules)
+      3
+  """
+  @spec number_of_clauses(Types.rules()) :: non_neg_integer()
+  def number_of_clauses(rules) when is_list(rules) do
+    Enum.reduce(rules, 0, &(&2 + number_of_clauses(&1)))
+  end
+
+  def number_of_clauses({_operator, clauses}) do
+    number_of_clauses(clauses)
+  end
+
+  def number_of_clauses(_) do
+    1
+  end
 end

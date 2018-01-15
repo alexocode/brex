@@ -35,13 +35,13 @@ defmodule Specification.Evaluator do
       iex> Specification.Evaluator.evaluate(is_empty_list, [1])
       {{:all, [{&:erlang.is_list/1, true}, {&Enum.empty?/1, false}]}, false}
 
-  #### negate
+  #### none
 
-      iex> is_non_empty_list = [&is_list/1, Specification.Operator.negate(&Enum.empty?/1)]
+      iex> is_non_empty_list = [&is_list/1, Specification.Operator.none(&Enum.empty?/1)]
       iex> Specification.Evaluator.evaluate(is_non_empty_list, [])
-      [{&:erlang.is_list/1, true}, {{:negate, [{&Enum.empty?/1, true}]}, false}]
+      [{&:erlang.is_list/1, true}, {{:none, [{&Enum.empty?/1, true}]}, false}]
       iex> Specification.Evaluator.evaluate(is_non_empty_list, [1])
-      [{&:erlang.is_list/1, true}, {{:negate, [{&Enum.empty?/1, false}]}, true}]
+      [{&:erlang.is_list/1, true}, {{:none, [{&Enum.empty?/1, false}]}, true}]
   """
 
   import Specification, only: [passed_evaluation?: 1]
@@ -70,7 +70,7 @@ defmodule Specification.Evaluator do
     {rule, result}
   end
 
-  for operator <- [:all, :any, :negate] do
+  for operator <- [:all, :any, :none] do
     def evaluate({unquote(operator), rules}, value) do
       evaluated_rules = evaluate(rules, value)
       operator_result = {unquote(operator), evaluated_rules}
@@ -92,7 +92,7 @@ defmodule Specification.Evaluator do
     Enum.any?(results, &passed_evaluation?/1)
   end
 
-  defp aggregate_operator_result({:negate, results}) do
+  defp aggregate_operator_result({:none, results}) do
     not Enum.all?(results, &passed_evaluation?/1)
   end
 end

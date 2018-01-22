@@ -3,10 +3,10 @@ defmodule Specification do
   The main module. Provides shortcut functions to evaluate rules, reduce the
   results to a boolean and to check if some value satisfy some rules.
 
-  For further information take a look at `Specification.Evaluator` and `Specification.ResultFormatter`.
+  For further information take a look at `Specification.Evaluator` and `Specification.Result.Formatter`.
   """
 
-  alias Specification.ResultFormatter, as: Formatter
+  alias Specification.Result.Formatter, as: Formatter
   alias Specification.Types
 
   defdelegate evaluate(rules, value), to: Specification.Evaluator

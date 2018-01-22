@@ -2,7 +2,7 @@ defmodule Specification.Evaluator do
   @moduledoc """
   Evaluates a value based on the given rules. Returns mapping of rules to their
   result. This mapping can then be processed by any module conforming to the
-  `Specification.ResultFormatter` behaviour.
+  `Specification.Result.Formatter` behaviour.
 
   ## Examples
   ### Simple

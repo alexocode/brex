@@ -1,4 +1,4 @@
-defmodule Specification.ResultFormatter do
+defmodule Specification.Result.Formatter do
   @moduledoc """
   A behaviour specifying a `format/1` callback which takes a list of results and
   reduces them to whatever the formatter wants to.
@@ -10,7 +10,7 @@ defmodule Specification.ResultFormatter do
   `ArgumentError` with an informative error message.
 
   These are the default formatters:
-  - `Specification.ResultFormatter.Boolean`
+  - `Specification.Result.Formatter.Boolean`
   """
 
   @callback format(Specification.Types.results()) :: any()
@@ -19,9 +19,11 @@ defmodule Specification.ResultFormatter do
     quote location: :keep do
       @behaviour unquote(__MODULE__)
 
+      alias Specification.Result
+
       import unquote(__MODULE__)
 
-      def format({_rule, _result} = single_result) when not is_list(single_result) do
+      def format(%Result{} = single_result) do
         single_result
         |> List.wrap()
         |> format()
@@ -35,7 +37,7 @@ defmodule Specification.ResultFormatter do
 
   def invalid_result!(result) do
     raise ArgumentError,
-          "Invalid evaluation result! Expects a list of two value tuples like `{MyCustomRule, true}`. " <>
+          "Invalid evaluation result! Expects a `Specification.Result` struct. " <>
             "Instead received: #{inspect(result)}"
   end
 end

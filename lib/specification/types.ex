@@ -7,8 +7,8 @@ defmodule Specification.Types do
 
   @type operator :: Specification.Operator.t()
 
-  @type result_value :: boolean() | :ok | {:ok, any()} | {:error, any()}
-  @type result :: {rule(), result_value()}
+  @type result_value :: Specification.Result.result_value()
+  @type result :: Specification.Result.t()
   @type results :: list(result())
 
   @type value :: any()

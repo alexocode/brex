@@ -1,18 +1,18 @@
-defmodule Specification.ResultFormatter.Rules do
+defmodule Specification.Result.Formatter.Rules do
   @moduledoc """
   A result formatter which reduces the given results to the contained rules.
   """
 
-  use Specification.ResultFormatter
+  use Specification.Result.Formatter
 
   alias Specification.Operator
 
   @impl true
-  def format(rules_and_results) do
-    Enum.map(rules_and_results, &extract_rule/1)
+  def format(results) do
+    Enum.map(results, &extract_rule/1)
   end
 
-  defp extract_rule({rule, result}) when is_boolean(result), do: safe_extract_rule(rule)
+  defp extract_rule(%Result{rule: rule}), do: safe_extract_rule(rule)
   defp extract_rule(other), do: invalid_result!(other)
 
   defp safe_extract_rule(rule) do

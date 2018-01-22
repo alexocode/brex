@@ -10,13 +10,18 @@ defmodule Specification.Result do
 
   @type t :: %__MODULE__{
           rule: Types.rule() | Types.rules(),
-          result: result_value()
+          result: result_value(),
+          value: Types.t()
         }
-  defstruct [:rule, :result]
+  defstruct [:rule, :result, :value]
 
-  def satisfied?(%__MODULE__{result: result}), do: satisfied?(result)
-  def satisfied?(boolean) when is_boolean(boolean), do: boolean
-  def satisfied?(:ok), do: true
-  def satisfied?({:ok, _}), do: true
-  def satisfied?({:error, _}), do: false
+  def passed?(%__MODULE__{result: result}), do: passed?(result)
+
+  def passed?(boolean) when is_boolean(boolean), do: boolean
+
+  def passed?(:ok), do: true
+  def passed?({:ok, _}), do: true
+
+  def passed?(:error), do: false
+  def passed?({:error, _}), do: false
 end

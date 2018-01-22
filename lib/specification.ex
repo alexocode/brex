@@ -3,21 +3,42 @@ defmodule Specification do
   The main module. Provides shortcut functions to evaluate rules, reduce the
   results to a boolean and to check if some value satisfy some rules.
 
-  For further information take a look at `Specification.Evaluator` and `Specification.Result.Formatter`.
+  For further information take a look at the following modules:
+  - `Specification.Rule`
+  - `Specification.Result`
+  - `Specification.Operator`
   """
 
-  alias Specification.Result.Formatter, as: Formatter
+  alias Specification.Result
   alias Specification.Types
 
-  defdelegate evaluate(rules, value), to: Specification.Evaluator
+  def evaluate(rules, value) when is_list(rules) do
+    rules
+    |> Specification.Operator.all()
+    |> evaluate(value)
+  end
 
-  defdelegate passed_evaluation?(results), to: Formatter.Boolean, as: :format
+  def evaluate(rule, value) do
+    result = Specifiation.Rule.evaluate(rule, value)
+
+    %Result{
+      rule: rule,
+      result: result,
+      value: value
+    }
+  end
+
+  def passed?(results) do
+    results
+    |> List.wrap()
+    |> Enum.all?()
+  end
 
   @spec satisfies?(Types.rules() | Types.rule(), Types.value()) :: boolean()
   def satisfies?(rules, value) do
     rules
     |> evaluate(value)
-    |> passed_evaluation?()
+    |> passed?()
   end
 
   @doc """

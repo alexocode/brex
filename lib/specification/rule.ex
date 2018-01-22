@@ -1,36 +1,48 @@
 defmodule Specification.Rule do
-  @moduledoc """
-  A behaviour specifying an `evaluate/1` function, also provides helpful
-  functions to evaluate such module based rules.
-  """
+  alias Specification.{Rule, Types}
 
-  alias Specification.Types
-
+  # A module implementing this behaviour
   @type t :: module()
 
-  @callback evaluate(Types.value()) :: Types.result()
+  @callback is_rule?(any()) :: boolean()
+  @callback evaluate(t(), Types.value()) :: Types.result()
 
-  def call_evaluate(rule, value) do
-    if is_rule?(rule) do
-      do_evaluate(rule, value)
-    else
-      raise ArgumentError, "Invalid rule: #{inspect(rule)}"
+  defmacro __using__(_which) do
+    quote do
+      @before_compile unquote(__MODULE__)
+      @behaviour unquote(__MODULE__)
     end
   end
 
-  def is_rule?(rule) when is_atom(rule) do
-    function_exported?(rule, :evaluate, 1)
+  defmacro __before_compile__(_env) do
+    quote do
+      def is_rule?(_other), do: false
+    end
   end
 
-  def is_rule(_rule) do
-    false
+  @rule_types [
+    Rule.Function,
+    Rule.Module,
+    Rule.Operator,
+    Rule.Struct
+  ]
+
+  def is_rule?(rule) do
+    Enum.any?(@rule_types, &apply(&1, :is_rule?, [rule]))
   end
 
-  defp do_evaluate(rule, value) do
-    rule.evaluate(value)
-  catch
-    error -> {:error, error}
-  rescue
-    error -> {:error, error}
+  def evaluate(rule, value) do
+    @rule_types
+    |> Enum.find(fn type ->
+      type.is_rule?(rule)
+    end)
+    |> case do
+      nil -> invalid_rule!(rule)
+      type -> type.evaluate(rule, value)
+    end
+  end
+
+  defp invalid_rule!(rule) do
+    raise ArgumentError, "Invalid rule: #{inspect(rule)}"
   end
 end

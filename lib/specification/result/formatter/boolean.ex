@@ -8,6 +8,6 @@ defmodule Specification.Result.Formatter.Boolean do
 
   @impl true
   def format(results) do
-    Enum.all?(results, &Result.satisfied?/1)
+    Enum.all?(results, &Result.passed?/1)
   end
 end

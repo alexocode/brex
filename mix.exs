@@ -28,7 +28,7 @@ defmodule Specification.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:espec, "~> 1.4.6", only: :test}
+      {:espec, github: "antonmi/espec", only: :test}
     ]
   end
 

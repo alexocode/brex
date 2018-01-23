@@ -31,12 +31,14 @@ defmodule Specification.Rule do
     Enum.any?(@rule_types, &apply(&1, :is_rule?, [rule]))
   end
 
-  def evaluate(rule, value) do
-    @rule_types
-    |> Enum.find(fn type ->
+  def type(rule) do
+    Enum.find(@rule_types, fn type ->
       type.is_rule?(rule)
     end)
-    |> case do
+  end
+
+  def evaluate(rule, value) do
+    case type(rule) do
       nil -> invalid_rule!(rule)
       type -> type.evaluate(rule, value)
     end

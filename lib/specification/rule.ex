@@ -1,4 +1,6 @@
 defmodule Specification.Rule do
+  alias Specification.{Result, Rule, Types}
+
   rule_types = [
     Rule.Function,
     Rule.Module,
@@ -28,7 +30,6 @@ defmodule Specification.Rule do
   result of the evaluation
   - `result/2` returns a `Specification.Result` containing the evaluation result
   """
-  alias Specification.{Result, Rule, Types}
 
   # A module implementing this behaviour
   @type t :: module()
@@ -43,11 +44,7 @@ defmodule Specification.Rule do
       @behaviour unquote(__MODULE__)
 
       def result(rule, value) do
-        %Specification.Result{
-          rule: rule,
-          result: evaluate(rule, value),
-          value: value
-        }
+        unquote(__MODULE__).result(rule, value)
       end
 
       defoverridable result: 2
@@ -82,7 +79,7 @@ defmodule Specification.Rule do
   def result(rule, value) do
     %Result{
       rule: rule,
-      result: evaluate(rule, value),
+      evaluation: evaluate(rule, value),
       value: value
     }
   end

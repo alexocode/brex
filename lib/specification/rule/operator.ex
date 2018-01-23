@@ -50,7 +50,7 @@ defmodule Specification.Rule.Operator do
   def result(operator, value) do
     %Result{
       rule: operator,
-      result: evaluate(operator, value, with: &Specification.result(&1, value)),
+      evaluation: evaluate(operator, with: &Specification.result(&1, value)),
       value: value
     }
   end

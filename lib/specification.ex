@@ -9,23 +9,26 @@ defmodule Specification do
   - `Specification.Operator`
   """
 
-  alias Specification.Result
-  alias Specification.Types
+  alias Specification.{Result, Rule, Types}
 
-  def evaluate(rules, value) when is_list(rules) do
+  def evaluate(rules, value) do
     rules
-    |> Specification.Operator.all()
-    |> evaluate(value)
+    |> wrap()
+    |> Rule.evaluate(value)
   end
 
-  def evaluate(rule, value) do
-    result = Specification.Rule.evaluate(rule, value)
+  def result(rules, value) do
+    rules
+    |> wrap()
+    |> Rule.result(value)
+  end
 
-    %Result{
-      rule: rule,
-      result: result,
-      value: value
-    }
+  defp wrap(rules) when is_list(rules) do
+    Specification.Operator.all(rules)
+  end
+
+  defp wrap(rule) do
+    rule
   end
 
   def passed?(results) do
@@ -37,7 +40,7 @@ defmodule Specification do
   @spec satisfies?(Types.rules() | Types.rule(), Types.value()) :: boolean()
   def satisfies?(rules, value) do
     rules
-    |> evaluate(value)
+    |> result(value)
     |> passed?()
   end
 

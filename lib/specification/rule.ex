@@ -1,16 +1,27 @@
 defmodule Specification.Rule do
-  alias Specification.{Rule, Types}
+  alias Specification.{Result, Rule, Types}
 
   # A module implementing this behaviour
   @type t :: module()
 
   @callback is_rule?(any()) :: boolean()
-  @callback evaluate(t(), Types.value()) :: Types.result()
+  @callback evaluate(t(), Types.value()) :: Types.result_value()
+  @callback result(t(), Types.value()) :: Types.result()
 
   defmacro __using__(_which) do
     quote do
       @before_compile unquote(__MODULE__)
       @behaviour unquote(__MODULE__)
+
+      def result(rule, value) do
+        %Specification.Result{
+          rule: rule,
+          result: evaluate(rule, value),
+          value: value
+        }
+      end
+
+      defoverridable result: 2
     end
   end
 
@@ -42,6 +53,14 @@ defmodule Specification.Rule do
       nil -> invalid_rule!(rule)
       type -> type.evaluate(rule, value)
     end
+  end
+
+  def result(rule, value) do
+    %Result{
+      rule: rule,
+      result: evaluate(rule, value),
+      value: value
+    }
   end
 
   defp invalid_rule!(rule) do

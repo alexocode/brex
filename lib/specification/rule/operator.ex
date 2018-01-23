@@ -43,7 +43,7 @@ defmodule Specification.Rule.Operator do
   end
 
   defp aggregate_operator_results(:none, results) do
-    not Enum.all?(results, &passed?/1)
+    not Enum.any?(results, &passed?/1)
   end
 
   @impl Specification.Rule

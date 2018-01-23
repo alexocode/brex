@@ -3,9 +3,8 @@ defmodule Shared.IsRuleSpec do
 
   import Specification.Assertions.Rule
 
-  let_overridable :rule_type
-  let_overridable :valid_rules
-  let_overridable :invalid_rules
+  let_overridable rule_type: Specification.Rule
+  let_overridable [:valid_rules, :invalid_rules]
 
   describe ".is_rule?" do
     context "for valid rules" do

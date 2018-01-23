@@ -19,7 +19,7 @@ defmodule Specification do
   end
 
   def evaluate(rule, value) do
-    result = Specifiation.Rule.evaluate(rule, value)
+    result = Specification.Rule.evaluate(rule, value)
 
     %Result{
       rule: rule,

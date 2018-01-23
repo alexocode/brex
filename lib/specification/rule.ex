@@ -1,4 +1,33 @@
 defmodule Specification.Rule do
+  rule_types = [
+    Rule.Function,
+    Rule.Module,
+    Rule.Operator,
+    Rule.Struct
+  ]
+
+  @moduledoc """
+  This module represents the central API to evaluate a given rule for a given
+  value.
+
+  ## Rule Types
+
+  It currently supports the following rule types:
+  #{
+    rule_types
+    |> Enum.map(&"- #{inspect(&1)}")
+    |> Enum.join("\n")
+  }
+
+  ## Behaviour
+
+  It also serves as the behaviour for all rule types. For this it provides the
+  following callbacks:
+  - `is_rule?/1` used to find the correct rule type
+  - `evaluate/2` evaluates the given rule with the given value, returns the
+  result of the evaluation
+  - `result/2` returns a `Specification.Result` containing the evaluation result
+  """
   alias Specification.{Result, Rule, Types}
 
   # A module implementing this behaviour
@@ -31,12 +60,7 @@ defmodule Specification.Rule do
     end
   end
 
-  @rule_types [
-    Rule.Function,
-    Rule.Module,
-    Rule.Operator,
-    Rule.Struct
-  ]
+  @rule_types rule_types
 
   def is_rule?(rule) do
     Enum.any?(@rule_types, &apply(&1, :is_rule?, [rule]))

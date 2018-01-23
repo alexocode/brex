@@ -12,10 +12,10 @@ defmodule Specification.Rule.Operator do
 
   @impl Specification.Rule
   def evaluate(operator, value) do
-    evaluate(operator, value, with: &Specification.evaluate(&1, value))
+    transform(operator, with: &Specification.evaluate(&1, value))
   end
 
-  defp evaluate(operator, value, with: transform) do
+  defp transform(operator, with: transform) do
     evaluated = transform_clauses(operator, transform)
 
     operator
@@ -50,7 +50,7 @@ defmodule Specification.Rule.Operator do
   def result(operator, value) do
     %Result{
       rule: operator,
-      evaluation: evaluate(operator, with: &Specification.result(&1, value)),
+      evaluation: transform(operator, with: &Specification.result(&1, value)),
       value: value
     }
   end

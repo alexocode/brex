@@ -1,8 +1,9 @@
 defmodule Specification.Rule.FunctionSpec do
   use ESpec, async: true
 
+  let rule_type: described_module()
+
   it_behaves_like Shared.IsRuleSpec,
-    rule_type: described_module(),
     valid_rules: [
       &is_list/1,
       fn _ -> true end
@@ -12,5 +13,18 @@ defmodule Specification.Rule.FunctionSpec do
       1,
       Support.SomeModuleRule,
       Specification.Operator.all([])
+    ]
+
+  it_behaves_like Shared.EvaluateSpec,
+    rule: &is_list/1,
+    valid_values: [
+      [],
+      [1, 2, 3],
+      [a: 1, b: 2]
+    ],
+    invalid_values: [
+      %{},
+      :a,
+      MapSet.new()
     ]
 end

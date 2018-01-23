@@ -17,7 +17,7 @@ defmodule Specification.Result.Formatter.Rules do
 
   defp safe_extract_rule(rule) do
     if Operator.operator?(rule) do
-      operator = Operator.rule!(rule)
+      operator = Operator.link!(rule)
 
       clauses =
         rule

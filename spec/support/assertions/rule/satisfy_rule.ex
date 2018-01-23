@@ -9,7 +9,7 @@ defmodule Specification.Assertions.Rule.SatisfyRule do
   defp match(value, {rule, type}) do
     result = type.evaluate(rule, value)
 
-    {result, result}
+    {Specification.Result.passed?(result), result}
   end
 
   defp success_message(value, {rule, type}, _, positive) do

@@ -33,4 +33,42 @@ defmodule Specification.Rule.ModuleSpec do
     invalid_values: [
       nil
     ]
+
+  defmodule RaisingRule do
+    @behaviour Specification.Rule.Module
+
+    @impl true
+    def evaluate(_value) do
+      raise "Ain't nobody got time for that!"
+    end
+  end
+
+  it_behaves_like Shared.EvaluateSpec,
+    rule: RaisingRule,
+    valid_values: [],
+    invalid_values: [
+      1,
+      :"2",
+      "3",
+      %{4 => 5},
+      [6, 7]
+    ]
+
+  defmodule ThrowingRule do
+    @behaviour Specification.Rule.Module
+
+    @impl true
+    def evaluate(value), do: throw(value)
+  end
+
+  it_behaves_like Shared.EvaluateSpec,
+    rule: ThrowingRule,
+    valid_values: [],
+    invalid_values: [
+      1,
+      :"2",
+      "3",
+      %{4 => 5},
+      [6, 7]
+    ]
 end

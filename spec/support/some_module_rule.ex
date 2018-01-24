@@ -1,4 +1,6 @@
 defmodule Support.SomeModuleRule do
+  @moduledoc false
+
   use Specification.Rule.Module
 
   @impl Specification.Rule.Module

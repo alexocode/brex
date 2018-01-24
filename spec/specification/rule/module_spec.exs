@@ -2,7 +2,7 @@ defmodule Specification.Rule.ModuleSpec do
   use ESpec, async: true
 
   defmodule NotNilRule do
-    @behaviour Specification.Rule.Module
+    use Specification.Rule.Module
 
     @impl Specification.Rule.Module
     def evaluate(value) do
@@ -35,7 +35,7 @@ defmodule Specification.Rule.ModuleSpec do
     ]
 
   defmodule RaisingRule do
-    @behaviour Specification.Rule.Module
+    use Specification.Rule.Module
 
     @impl true
     def evaluate(_value) do
@@ -55,7 +55,7 @@ defmodule Specification.Rule.ModuleSpec do
     ]
 
   defmodule ThrowingRule do
-    @behaviour Specification.Rule.Module
+    use Specification.Rule.Module
 
     @impl true
     def evaluate(value), do: throw(value)

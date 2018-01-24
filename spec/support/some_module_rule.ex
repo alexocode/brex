@@ -1,5 +1,5 @@
 defmodule Support.SomeModuleRule do
-  @behaviour Specification.Rule.Module
+  use Specification.Rule.Module
 
   @impl Specification.Rule.Module
   def evaluate(value) do

@@ -31,21 +31,18 @@ defmodule Specification.Rule.Struct do
   defmacro __before_compile__(_env) do
     # include default fallback functions at end, with lowest precedence
     quote generated: true, location: :keep do
-      def is_rule?(%__MODULE__{}), do: true
-      def is_rule?(_other), do: false
-
       def evaluate(other, value) do
         {:error, {:non_matching_other_value, other, value}}
       end
     end
   end
 
+  @impl Specification.Rule
   def is_rule?(%_{} = struct) do
-    module = struct.__struct__
-
-    function_exported?(module, :is_rule?, 1) and module.is_rule?(struct)
+    function_exported?(struct.__struct__, :evaluate, 2)
   end
 
+  @impl Specification.Rule
   def evaluate(struct, value) do
     struct.__struct__.evaluate(struct, value)
   end

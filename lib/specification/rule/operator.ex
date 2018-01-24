@@ -1,4 +1,16 @@
 defmodule Specification.Rule.Operator do
+  @moduledoc """
+  This rule type contains the evaluation logic for operators which are specified
+  in `Specification.Operator`.
+
+  It takes these operators and performs the necessary logic to aggregate the
+  results of all operator clauses.
+
+  Supported operators are:
+  - `all`
+  - `any`
+  - `none`
+  """
   use Specification.Rule
 
   import Specification.Result, only: [passed?: 1]

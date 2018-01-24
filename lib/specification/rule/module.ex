@@ -1,4 +1,20 @@
 defmodule Specification.Rule.Module do
+  @moduledoc """
+  This rule type represents a rule which is implemented in a particular module.
+
+  A module based rule is useful when one has to reuse a rather complex rule
+  multiple times.
+
+  To specify a `Module` based rule one can `use` this module.
+
+      defmodule MyRule do
+        use #{inspect(__MODULE__)}
+
+        def evaluate(value) do
+          is_map(value) or Keyword.keyword?(value)
+        end
+      end
+  """
   use Specification.Rule
 
   alias Specification.Types

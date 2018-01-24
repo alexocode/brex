@@ -1,4 +1,11 @@
 defmodule Specification.Rule.Function do
+  @moduledoc """
+  This rule type contains the logic to evaluate function based rules such as
+  `&is_map/1`.
+
+  It takes this functions and calls them with the given value. In addition it
+  catches any `raise`d errors or `throw`n terms and wraps them in an `:error` tuple.
+  """
   use Specification.Rule
 
   @impl Specification.Rule

@@ -2,14 +2,13 @@ defmodule Specification.Assertions.Rule.BeRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
-  defp match(rule, nil) do
-    match(rule, Specification.Rule)
-  end
-
   defp match(rule, type) do
-    is_valid = type.is_rule?(rule)
+    is_valid = is_rule?(type, rule)
     {is_valid, is_valid}
   end
+
+  defp is_rule?(nil, rule), do: Specification.Rule.is_rule?(rule)
+  defp is_rule?(type, rule), do: type.is_rule_of_type?(rule)
 
   defp success_message(rule, type, _, positive) do
     to = if positive, do: "is", else: "is not"

@@ -41,7 +41,7 @@ defmodule Specification.Rule.Module do
   end
 
   @impl Specification.Rule
-  def is_rule?(rule) when is_atom(rule) do
+  def is_rule_of_type?(rule) when is_atom(rule) do
     function_exported?(rule, :evaluate, 1)
   end
 

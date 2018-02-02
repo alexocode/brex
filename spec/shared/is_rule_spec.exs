@@ -6,7 +6,7 @@ defmodule Shared.IsRuleSpec do
   let_overridable rule_type: Specification.Rule
   let_overridable [:valid_rules, :invalid_rules]
 
-  describe ".is_rule?" do
+  describe ".is_rule_for_type?" do
     context "for valid rules" do
       it "be rules" do
         valid_rules()

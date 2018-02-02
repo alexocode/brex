@@ -13,7 +13,7 @@ defmodule Specification.Rule.Function do
   @type t :: (Types.value() -> Types.evaluation())
 
   @impl Specification.Rule
-  def is_rule?(rule) do
+  def is_rule_of_type?(rule) do
     is_function(rule, 1)
   end
 

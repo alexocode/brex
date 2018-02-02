@@ -20,7 +20,7 @@ defmodule Specification.Rule.Operator do
   @type t :: Specification.Operator.t()
 
   @impl Specification.Rule
-  def is_rule?(rule) do
+  def is_rule_of_type?(rule) do
     Operator.operator?(rule)
   end
 

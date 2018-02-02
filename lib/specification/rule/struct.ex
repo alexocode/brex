@@ -41,7 +41,7 @@ defmodule Specification.Rule.Struct do
   end
 
   @impl Specification.Rule
-  def is_rule?(%_{} = struct) do
+  def is_rule_of_type?(%_{} = struct) do
     function_exported?(struct.__struct__, :evaluate, 2)
   end
 

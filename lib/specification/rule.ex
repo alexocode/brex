@@ -25,7 +25,7 @@ defmodule Specification.Rule do
 
   It also serves as the behaviour for all rule types. For this it provides the
   following callbacks:
-  - `is_rule?/1` used to find the correct rule type
+  - `is_rule_of_type?/1` used to find the correct rule type
   - `evaluate/2` evaluates the given rule with the given value, returns the
   result of the evaluation
   - `result/2` returns a `Specification.Result` containing the evaluation result
@@ -34,7 +34,7 @@ defmodule Specification.Rule do
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
   @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
 
-  @callback is_rule?(any()) :: boolean()
+  @callback is_rule_of_type?(any()) :: boolean()
   @callback evaluate(t(), Types.value()) :: Types.result_value()
   @callback result(t(), Types.value()) :: Types.result()
 
@@ -53,19 +53,19 @@ defmodule Specification.Rule do
 
   defmacro __before_compile__(_env) do
     quote do
-      def is_rule?(_other), do: false
+      def is_rule_of_type?(_other), do: false
     end
   end
 
   @rule_types rule_types
 
   def is_rule?(rule) do
-    Enum.any?(@rule_types, &apply(&1, :is_rule?, [rule]))
+    Enum.any?(@rule_types, &apply(&1, :is_rule_of_type?, [rule]))
   end
 
   def type(rule) do
     Enum.find(@rule_types, fn type ->
-      type.is_rule?(rule)
+      type.is_rule_of_type?(rule)
     end)
   end
 

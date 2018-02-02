@@ -21,6 +21,9 @@ defmodule Specification.Rule.Module do
 
   @callback evaluate(Types.value()) :: Types.result()
 
+  # A module implementing this behaviour
+  @type t :: module()
+
   defmacro __using__(_which) do
     quote location: :keep do
       @before_compile unquote(__MODULE__)

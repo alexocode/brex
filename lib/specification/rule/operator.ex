@@ -17,6 +17,8 @@ defmodule Specification.Rule.Operator do
 
   alias Specification.{Operator, Result}
 
+  @type t :: Specification.Operator.t()
+
   @impl Specification.Rule
   def is_rule?(rule) do
     Operator.operator?(rule)

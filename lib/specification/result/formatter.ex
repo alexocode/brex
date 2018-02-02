@@ -13,7 +13,7 @@ defmodule Specification.Result.Formatter do
   - `Specification.Result.Formatter.Boolean`
   """
 
-  @callback format(Specification.Types.results()) :: any()
+  @callback format(list(Specification.Types.result())) :: any()
 
   defmacro __using__(_which) do
     quote location: :keep do

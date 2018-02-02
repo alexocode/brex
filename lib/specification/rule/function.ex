@@ -8,6 +8,10 @@ defmodule Specification.Rule.Function do
   """
   use Specification.Rule
 
+  alias Specification.Types
+
+  @type t :: (Types.value() -> Types.evaluation())
+
   @impl Specification.Rule
   def is_rule?(rule) do
     is_function(rule, 1)

@@ -21,6 +21,9 @@ defmodule Specification.Rule.Struct do
 
   @callback evaluate(struct(), Types.value()) :: Types.result()
 
+  # A struct implementing this behaviour
+  @type t :: struct()
+
   defmacro __using__(_which) do
     quote location: :keep do
       @before_compile unquote(__MODULE__)

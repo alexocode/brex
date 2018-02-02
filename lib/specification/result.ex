@@ -6,12 +6,14 @@ defmodule Specification.Result do
   """
   alias Specification.Types
 
-  @type result_value :: boolean() | :ok | {:ok, any()} | {:error, any()}
+  @type evaluation :: boolean() | :ok | {:ok, any()} | {:error, any()}
+  @type rule :: Types.rule()
+  @type value :: Types.value()
 
   @type t :: %__MODULE__{
-          rule: Types.rule() | Types.rules(),
-          evaluation: result_value(),
-          value: Types.t()
+          rule: rule(),
+          evaluation: evaluation(),
+          value: value()
         }
   defstruct [:rule, :evaluation, :value]
 

@@ -11,12 +11,20 @@ defmodule Specification do
 
   alias Specification.{Rule, Types}
 
+  @type evaluation :: Types.evaluation()
+  @type one_or_many_results :: Types.result() | list(Types.result())
+  @type one_or_many_rules :: Types.rule() | list(Types.rules())
+  @type result :: Types.result()
+  @type value :: Types.value()
+
+  @spec evaluate(one_or_many_rules(), value()) :: evaluation()
   def evaluate(rules, value) do
     rules
     |> wrap()
     |> Rule.evaluate(value)
   end
 
+  @spec result(one_or_many_rules(), value()) :: result()
   def result(rules, value) do
     rules
     |> wrap()
@@ -31,13 +39,14 @@ defmodule Specification do
     rule
   end
 
+  @spec passed?(one_or_many_results()) :: boolean()
   def passed?(results) do
     results
     |> List.wrap()
-    |> Enum.all?()
+    |> Enum.all?(&Specification.Result.passed?/1)
   end
 
-  @spec satisfies?(Types.rules() | Types.rule(), Types.value()) :: boolean()
+  @spec satisfies?(one_or_many_rules(), value()) :: boolean()
   def satisfies?(rules, value) do
     rules
     |> result(value)

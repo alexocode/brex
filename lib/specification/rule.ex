@@ -31,8 +31,8 @@ defmodule Specification.Rule do
   - `result/2` returns a `Specification.Result` containing the evaluation result
   """
 
-  # A module implementing this behaviour
-  @type t :: module()
+  # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
+  @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
 
   @callback is_rule?(any()) :: boolean()
   @callback evaluate(t(), Types.value()) :: Types.result_value()
@@ -104,7 +104,8 @@ defmodule Specification.Rule do
   iex> Specification.number_of_clauses(rules)
   3
   """
-  @spec number_of_clauses(Types.rules()) :: non_neg_integer()
+  @spec number_of_clauses(t() | list(t)) :: non_neg_integer()
+  # TODO: Move this into the rule types ...
   def number_of_clauses(rules) when is_list(rules) do
     Enum.reduce(rules, 0, &(&2 + number_of_clauses(&1)))
   end

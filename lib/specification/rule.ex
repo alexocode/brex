@@ -1,120 +1,95 @@
 defmodule Specification.Rule do
-  alias Specification.{Result, Rule, Types}
+  defprotocol Evaluate do
+    @fallback_to_any false
 
-  rule_types = [
-    Rule.Function,
-    Rule.Module,
-    Rule.Operator,
-    Rule.Struct
-  ]
+    @spec evaluate(t(), Types.value()) :: Types.evaluation()
+    def evaluate(rule, value)
+  end
 
-  @moduledoc """
-  This module represents the central API to evaluate a given rule for a given
-  value.
+  defprotocol Result do
+    @fallback_to_any true
 
-  ## Rule Types
+    @spec result(t(), Types.value()) :: Types.result()
+    def result(rule, value)
+  end
 
-  It currently supports the following rule types:
-  #{
-    rule_types
-    |> Enum.map(&"- #{inspect(&1)}")
-    |> Enum.join("\n")
-  }
+  defprotocol NumberOfClauses do
+    @fallback_to_any true
 
-  ## Behaviour
-
-  It also serves as the behaviour for all rule types. For this it provides the
-  following callbacks:
-  - `is_rule_of_type?/1` used to find the correct rule type
-  - `evaluate/2` evaluates the given rule with the given value, returns the
-  result of the evaluation
-  - `result/2` returns a `Specification.Result` containing the evaluation result
-  """
+    @spec number_of_clauses(t() | list(t())) :: non_neg_integer()
+    def number_of_clauses(rule)
+  end
 
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
-  @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
-
-  @callback is_rule_of_type?(any()) :: boolean()
-  @callback evaluate(t(), Types.value()) :: Types.result_value()
-  @callback result(t(), Types.value()) :: Types.result()
+  # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
+  @type t :: any()
 
   defmacro __using__(_which) do
-    quote do
-      @before_compile unquote(__MODULE__)
-      @behaviour unquote(__MODULE__)
-
-      def result(rule, value) do
-        unquote(__MODULE__).result(rule, value)
-      end
-
-      defoverridable result: 2
-    end
+    quote do: @after_compile({Specification.Rule.Decorator, :decorate})
   end
 
-  defmacro __before_compile__(_env) do
-    quote do
-      def is_rule_of_type?(_other), do: false
-    end
-  end
+  @spec evaluate(t(), Types.value()) :: Types.evaluation()
+  defdelegate evaluate(rule, value), to: Evaluate
 
-  @rule_types rule_types
-
-  def is_rule?(rule) do
-    Enum.any?(@rule_types, &apply(&1, :is_rule_of_type?, [rule]))
-  end
-
-  def type(rule) do
-    Enum.find(@rule_types, fn type ->
-      type.is_rule_of_type?(rule)
-    end)
-  end
-
-  def evaluate(rule, value) do
-    case type(rule) do
-      nil -> invalid_rule!(rule)
-      type -> type.evaluate(rule, value)
-    end
-  end
-
-  def result(rule, value) do
-    %Result{
-      rule: rule,
-      evaluation: evaluate(rule, value),
-      value: value
-    }
-  end
-
-  defp invalid_rule!(rule) do
-    raise ArgumentError, "Invalid rule: #{inspect(rule)}"
-  end
+  @spec result(t(), Types.value()) :: Types.result()
+  defdelegate result(rule, value), to: Result
 
   @doc """
   Returns the number of clauses this rule has.
 
   ## Examples
 
-  iex> Specification.number_of_clauses([])
+  iex> Specification.Rule.number_of_clauses([])
   0
 
   iex> rules = [fn _ -> true end]
-  iex> Specification.number_of_clauses(rules)
+  iex> Specification.Rule.number_of_clauses(rules)
   1
 
   iex> rules = [fn _ -> true end, Specification.Operator.any(fn _ -> false end, fn _ -> true end)]
-  iex> Specification.number_of_clauses(rules)
+  iex> Specification.Rule.number_of_clauses(rules)
   3
   """
-  @spec number_of_clauses(t() | list(t)) :: non_neg_integer()
-  # TODO: Move this into the rule types ...
-  def number_of_clauses(rules) when is_list(rules) do
-    Enum.reduce(rules, 0, &(&2 + number_of_clauses(&1)))
+  @spec number_of_clauses(t() | list(t())) :: non_neg_integer()
+  defdelegate number_of_clauses(rule), to: NumberOfClauses
+end
+
+defmodule Specificaiton.Rule.Decorator do
+  alias Specification.Rule
+
+  def decorate(%{module: module} = env, _bytecode) do
+    defimpl_evaluate(module) ||
+      raise CompileError,
+        file: env.file,
+        line: env.line,
+        description:
+          "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} without defining evaluate/2"
+
+    defimpl_result(module)
+    defimpl_number_of_clauses(module)
   end
 
-  def number_of_clauses({_operator, clauses}) do
-    number_of_clauses(clauses)
+  def defimpl_evaluate(module) do
+    if function_exported?(module, :evaluate, 2) do
+      defimpl Rule.Evaluate, for: module do
+        defdelegate evaluate(rule, value), to: module
+      end
+    end
   end
 
-  def number_of_clauses(_) do
-    1
+  def defimpl_result(module) do
+    if function_exported?(module, :result, 2) do
+      defimpl Rule.Result, for: module do
+        defdelegate result(rule, value), to: module
+      end
+    end
+  end
+
+  def defimpl_number_of_clauses(module) do
+    if function_exported?(module, :number_of_clauses, 1) do
+      defimpl Rule.NumberOfClauses, for: module do
+        defdelegate number_of_clauses(rule), to: module
+      end
+    end
   end
 end

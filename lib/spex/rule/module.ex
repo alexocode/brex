@@ -1,4 +1,4 @@
-defimpl Specification.Rule.Module, for: Atom do
+defimpl Spex.Rule.Module, for: Atom do
   def evaluate(module, value) when function_exported?(module, :evaluate, 1) do
     module.evaluate(value)
   end

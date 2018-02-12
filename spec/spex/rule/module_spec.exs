@@ -1,10 +1,10 @@
-defmodule Specification.Rule.ModuleSpec do
+defmodule Spex.Rule.ModuleSpec do
   use ESpec, async: true
 
   defmodule NotNilRule do
-    use Specification.Rule.Module
+    use Spex.Rule.Module
 
-    @impl Specification.Rule.Module
+    @impl Spex.Rule.Module
     def evaluate(value) do
       not is_nil(value)
     end
@@ -20,7 +20,7 @@ defmodule Specification.Rule.ModuleSpec do
       :a,
       1,
       &is_list/1,
-      Specification.Operator.all([])
+      Spex.Operator.all([])
     ]
 
   it_behaves_like Shared.EvaluateSpec,
@@ -35,7 +35,7 @@ defmodule Specification.Rule.ModuleSpec do
     ]
 
   defmodule RaisingRule do
-    use Specification.Rule.Module
+    use Spex.Rule.Module
 
     @impl true
     def evaluate(_value) do
@@ -55,7 +55,7 @@ defmodule Specification.Rule.ModuleSpec do
     ]
 
   defmodule ThrowingRule do
-    use Specification.Rule.Module
+    use Spex.Rule.Module
 
     @impl true
     def evaluate(value), do: throw(value)

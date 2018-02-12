@@ -1,6 +1,6 @@
-defmodule Specification.Rule.Struct do
+defmodule Spex.Rule.Struct do
   @moduledoc """
-  This module contains the behaviour to specify a Specification rule with some
+  This module contains the behaviour to specify a Spex rule with some
   state by making use of structs.
 
   # TODO: Change this!
@@ -17,7 +17,7 @@ defmodule Specification.Rule.Struct do
         end
       end
   """
-  alias Specification.{Rule, Types}
+  alias Spex.{Rule, Types}
 
   # A struct implementing this behaviour
   @type t :: struct()

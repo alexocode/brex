@@ -1,10 +1,10 @@
-defmodule Specification.Result do
+defmodule Spex.Result do
   @moduledoc """
   Represents a result of a rule evaluation.
 
   It contains the rule and the evaluated result which was returned by the rule.
   """
-  alias Specification.Types
+  alias Spex.Types
 
   @type evaluation :: boolean() | :ok | {:ok, any()} | {:error, any()}
   @type rule :: Types.rule()

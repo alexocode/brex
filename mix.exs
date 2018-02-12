@@ -1,9 +1,9 @@
-defmodule Specification.Mixfile do
+defmodule Spex.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :specification,
+      app: :spex,
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),

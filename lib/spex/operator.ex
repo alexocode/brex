@@ -1,4 +1,4 @@
-defmodule Specification.Operator do
+defmodule Spex.Operator do
   @moduledoc """
   Operators to link links with boolean logic.
 
@@ -13,10 +13,10 @@ defmodule Specification.Operator do
   @type clauses :: list(clause())
 
   defprotocol Linkable do
-    @spec clauses(Specification.Operator.t()) :: Specification.Operator.clauses()
+    @spec clauses(Spex.Operator.t()) :: Spex.Operator.clauses()
     def clauses(operator)
 
-    # @spec link(Specification.Operator.t()) :: Specification.Operator.link()
+    # @spec link(Spex.Operator.t()) :: Spex.Operator.link()
     # def link(operator)
 
     @spec passed?(list(boolean())) :: boolean()
@@ -25,7 +25,7 @@ defmodule Specification.Operator do
 
   @callback new(clauses()) :: t()
   @callback clauses(t()) :: clauses()
-  # @callback link(Specification.Operator.t()) :: Specification.Operator.link()
+  # @callback link(Spex.Operator.t()) :: Spex.Operator.link()
   @callback passed?(list(boolean())) :: boolean()
 
   @links [:all, :any, :none]

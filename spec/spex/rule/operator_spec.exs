@@ -1,7 +1,7 @@
-defmodule Specification.Rule.OperatorSpec do
+defmodule Spex.Rule.OperatorSpec do
   use ESpec, async: true
 
-  import Specification.Operator
+  import Spex.Operator
 
   defmodule SomeStruct do
     defstruct []

@@ -1,15 +1,15 @@
-defmodule Specification do
+defmodule Spex do
   @moduledoc """
   The main module. Provides shortcut functions to evaluate rules, reduce the
   results to a boolean and to check if some value satisfy some rules.
 
   For further information take a look at the following modules:
-  - `Specification.Rule`
-  - `Specification.Result`
-  - `Specification.Operator`
+  - `Spex.Rule`
+  - `Spex.Result`
+  - `Spex.Operator`
   """
 
-  alias Specification.{Rule, Types}
+  alias Spex.{Rule, Types}
 
   @type evaluation :: Types.evaluation()
   @type one_or_many_results :: Types.result() | list(Types.result())
@@ -32,7 +32,7 @@ defmodule Specification do
   end
 
   defp wrap(rules) when is_list(rules) do
-    Specification.Operator.all(rules)
+    Spex.Operator.all(rules)
   end
 
   defp wrap(rule) do
@@ -43,7 +43,7 @@ defmodule Specification do
   def passed?(results) do
     results
     |> List.wrap()
-    |> Enum.all?(&Specification.Result.passed?/1)
+    |> Enum.all?(&Spex.Result.passed?/1)
   end
 
   @spec satisfies?(one_or_many_rules(), value()) :: boolean()

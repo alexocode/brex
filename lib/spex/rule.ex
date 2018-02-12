@@ -1,4 +1,4 @@
-defmodule Specification.Rule do
+defmodule Spex.Rule do
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
   # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
   @type t :: any()
@@ -38,15 +38,15 @@ defmodule Specification.Rule do
 
   ## Examples
 
-  iex> Specification.Rule.number_of_clauses([])
+  iex> Spex.Rule.number_of_clauses([])
   0
 
   iex> rules = [fn _ -> true end]
-  iex> Specification.Rule.number_of_clauses(rules)
+  iex> Spex.Rule.number_of_clauses(rules)
   1
 
-  iex> rules = [fn _ -> true end, Specification.Operator.any(fn _ -> false end, fn _ -> true end)]
-  iex> Specification.Rule.number_of_clauses(rules)
+  iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
+  iex> Spex.Rule.number_of_clauses(rules)
   3
   """
   @spec number_of_clauses(t() | list(t())) :: non_neg_integer()

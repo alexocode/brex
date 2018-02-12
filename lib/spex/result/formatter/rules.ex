@@ -1,11 +1,11 @@
-defmodule Specification.Result.Formatter.Rules do
+defmodule Spex.Result.Formatter.Rules do
   @moduledoc """
   A result formatter which reduces the given results to the contained rules.
   """
 
-  use Specification.Result.Formatter
+  use Spex.Result.Formatter
 
-  alias Specification.Operator
+  alias Spex.Operator
 
   @impl true
   def format(results) do

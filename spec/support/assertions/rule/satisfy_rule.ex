@@ -1,15 +1,15 @@
-defmodule Specification.Assertions.Rule.SatisfyRule do
+defmodule Spex.Assertions.Rule.SatisfyRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
   defp match(value, {rule, nil}) do
-    match(value, {rule, Specification.Rule})
+    match(value, {rule, Spex.Rule})
   end
 
   defp match(value, {rule, type}) do
     result = type.evaluate(rule, value)
 
-    {Specification.Result.passed?(result), result}
+    {Spex.Result.passed?(result), result}
   end
 
   defp success_message(value, {rule, type}, _, positive) do

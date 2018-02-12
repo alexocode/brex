@@ -1,10 +1,10 @@
-defmodule Specification.Result.Formatter.Boolean do
+defmodule Spex.Result.Formatter.Boolean do
   @moduledoc """
   A result formatter which reduces the given results to a single boolean
   specifying whether the rules have been fulfilled or not.
   """
 
-  use Specification.Result.Formatter
+  use Spex.Result.Formatter
 
   @impl true
   def format(results) do

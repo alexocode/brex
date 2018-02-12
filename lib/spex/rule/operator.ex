@@ -1,7 +1,7 @@
-defmodule Specification.Rule.Operator do
+defmodule Spex.Rule.Operator do
   @moduledoc """
   This rule type contains the evaluation logic for operators which are specified
-  in `Specification.Operator`.
+  in `Spex.Operator`.
 
   It takes these operators and performs the necessary logic to aggregate the
   results of all operator clauses.
@@ -11,22 +11,22 @@ defmodule Specification.Rule.Operator do
   - `any`
   - `none`
   """
-  use Specification.Rule
+  use Spex.Rule
 
-  import Specification.Result, only: [passed?: 1]
+  import Spex.Result, only: [passed?: 1]
 
-  alias Specification.{Operator, Result}
+  alias Spex.{Operator, Result}
 
-  @type t :: Specification.Operator.t()
+  @type t :: Spex.Operator.t()
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def is_rule_of_type?(rule) do
     Operator.operator?(rule)
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def evaluate(operator, value) do
-    transform(operator, with: &Specification.evaluate(&1, value))
+    transform(operator, with: &Spex.evaluate(&1, value))
   end
 
   defp transform(operator, with: transform) do
@@ -60,11 +60,11 @@ defmodule Specification.Rule.Operator do
     not Enum.any?(results, &passed?/1)
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def result(operator, value) do
     %Result{
       rule: operator,
-      evaluation: transform(operator, with: &Specification.result(&1, value)),
+      evaluation: transform(operator, with: &Spex.result(&1, value)),
       value: value
     }
   end

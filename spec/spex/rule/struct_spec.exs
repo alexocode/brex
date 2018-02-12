@@ -1,12 +1,12 @@
-defmodule Specification.Rule.StructSpec do
+defmodule Spex.Rule.StructSpec do
   use ESpec, async: true
 
   defmodule EqualsRule do
-    use Specification.Rule.Struct
+    use Spex.Rule.Struct
 
     defstruct [:value]
 
-    @impl Specification.Rule.Struct
+    @impl Spex.Rule.Struct
     def evaluate(%__MODULE__{value: expected}, value) do
       expected == value
     end
@@ -22,7 +22,7 @@ defmodule Specification.Rule.StructSpec do
       :a,
       1,
       &is_list/1,
-      Specification.Operator.all([]),
+      Spex.Operator.all([]),
       Support.SomeModuleRule
     ]
 

@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"*.beam",
+				"cover/*.html"
+			],
+			"path": "."
+		}
+	]
+}

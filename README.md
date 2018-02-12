@@ -1,21 +1,21 @@
-# Specification
+# Spex
 
 **TODO: Add description**
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `specification` to your list of dependencies in `mix.exs`:
+by adding `spex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:specification, "~> 0.1.0"}
+    {:spex, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/specification](https://hexdocs.pm/specification).
+be found at [https://hexdocs.pm/spex](https://hexdocs.pm/spex).
 

@@ -1,4 +1,4 @@
-defmodule Specification.Assertions.Rule.BeRule do
+defmodule Spex.Assertions.Rule.BeRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
@@ -7,7 +7,7 @@ defmodule Specification.Assertions.Rule.BeRule do
     {is_valid, is_valid}
   end
 
-  defp is_rule?(nil, rule), do: Specification.Rule.is_rule?(rule)
+  defp is_rule?(nil, rule), do: Spex.Rule.is_rule?(rule)
   defp is_rule?(type, rule), do: type.is_rule_of_type?(rule)
 
   defp success_message(rule, type, _, positive) do
@@ -22,8 +22,8 @@ defmodule Specification.Assertions.Rule.BeRule do
     """
     Expected rule #{to} be #{rule_of_type(type)}, but #{it_is}!
     iex> rule = #{inspect(rule)}
-    iex> Specification.Rule.type(rule)
-    #{inspect(Specification.Rule.type(rule))}
+    iex> Spex.Rule.type(rule)
+    #{inspect(Spex.Rule.type(rule))}
     """
   end
 

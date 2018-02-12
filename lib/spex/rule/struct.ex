@@ -1,6 +1,6 @@
-defmodule Specification.Rule.Struct do
+defmodule Spex.Rule.Struct do
   @moduledoc """
-  This module contains the behaviour to specify a Specification rule with some
+  This module contains the behaviour to specify a Spex rule with some
   state by making use of structs.
 
   You can __use__ this module to define your own struct based rules:
@@ -15,9 +15,9 @@ defmodule Specification.Rule.Struct do
         end
       end
   """
-  use Specification.Rule
+  use Spex.Rule
 
-  alias Specification.Types
+  alias Spex.Types
 
   @callback evaluate(struct(), Types.value()) :: Types.result()
 
@@ -40,12 +40,12 @@ defmodule Specification.Rule.Struct do
     end
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def is_rule_of_type?(%_{} = struct) do
     function_exported?(struct.__struct__, :evaluate, 2)
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def evaluate(struct, value) do
     struct.__struct__.evaluate(struct, value)
   end

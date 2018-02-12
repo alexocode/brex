@@ -1,4 +1,4 @@
-defmodule Specification.OperatorSpec do
+defmodule Spex.OperatorSpec do
   use ESpec, async: true
 
   links = [:all, :any, :none]

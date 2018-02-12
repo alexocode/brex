@@ -1,4 +1,4 @@
-defmodule Specification.Rule.Module do
+defmodule Spex.Rule.Module do
   @moduledoc """
   This rule type represents a rule which is implemented in a particular module.
 
@@ -15,9 +15,9 @@ defmodule Specification.Rule.Module do
         end
       end
   """
-  use Specification.Rule
+  use Spex.Rule
 
-  alias Specification.Types
+  alias Spex.Types
 
   @callback evaluate(Types.value()) :: Types.result()
 
@@ -40,12 +40,12 @@ defmodule Specification.Rule.Module do
     end
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def is_rule_of_type?(rule) when is_atom(rule) do
     function_exported?(rule, :evaluate, 1)
   end
 
-  @impl Specification.Rule
+  @impl Spex.Rule
   def evaluate(rule, value) do
     rule.evaluate(value)
   catch

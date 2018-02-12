@@ -1,4 +1,4 @@
-defmodule Specification.Operator do
+defmodule Spex.Operator do
   @moduledoc """
   Operators to link links with boolean logic.
 

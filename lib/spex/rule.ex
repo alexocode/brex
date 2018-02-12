@@ -1,5 +1,5 @@
-defmodule Specification.Rule do
-  alias Specification.{Result, Rule, Types}
+defmodule Spex.Rule do
+  alias Spex.{Result, Rule, Types}
 
   rule_types = [
     Rule.Function,
@@ -28,7 +28,7 @@ defmodule Specification.Rule do
   - `is_rule_of_type?/1` used to find the correct rule type
   - `evaluate/2` evaluates the given rule with the given value, returns the
   result of the evaluation
-  - `result/2` returns a `Specification.Result` containing the evaluation result
+  - `result/2` returns a `Spex.Result` containing the evaluation result
   """
 
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
@@ -93,15 +93,15 @@ defmodule Specification.Rule do
 
   ## Examples
 
-  iex> Specification.number_of_clauses([])
+  iex> Spex.number_of_clauses([])
   0
 
   iex> rules = [fn _ -> true end]
-  iex> Specification.number_of_clauses(rules)
+  iex> Spex.number_of_clauses(rules)
   1
 
-  iex> rules = [fn _ -> true end, Specification.Operator.any(fn _ -> false end, fn _ -> true end)]
-  iex> Specification.number_of_clauses(rules)
+  iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
+  iex> Spex.number_of_clauses(rules)
   3
   """
   @spec number_of_clauses(t() | list(t)) :: non_neg_integer()

@@ -1,4 +1,4 @@
-defmodule Specification.Result.Formatter do
+defmodule Spex.Result.Formatter do
   @moduledoc """
   A behaviour specifying a `format/1` callback which takes a list of results and
   reduces them to whatever the formatter wants to.
@@ -10,16 +10,16 @@ defmodule Specification.Result.Formatter do
   `ArgumentError` with an informative error message.
 
   These are the default formatters:
-  - `Specification.Result.Formatter.Boolean`
+  - `Spex.Result.Formatter.Boolean`
   """
 
-  @callback format(list(Specification.Types.result())) :: any()
+  @callback format(list(Spex.Types.result())) :: any()
 
   defmacro __using__(_which) do
     quote location: :keep do
       @behaviour unquote(__MODULE__)
 
-      alias Specification.Result
+      alias Spex.Result
 
       import unquote(__MODULE__)
 
@@ -37,7 +37,7 @@ defmodule Specification.Result.Formatter do
 
   def invalid_result!(result) do
     raise ArgumentError,
-          "Invalid evaluation result! Expects a `Specification.Result` struct. " <>
+          "Invalid evaluation result! Expects a `Spex.Result` struct. " <>
             "Instead received: #{inspect(result)}"
   end
 end

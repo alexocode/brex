@@ -1,4 +1,4 @@
-defmodule Specification.Rule.FunctionSpec do
+defmodule Spex.Rule.FunctionSpec do
   use ESpec, async: true
 
   let rule_type: described_module()
@@ -12,7 +12,7 @@ defmodule Specification.Rule.FunctionSpec do
       :a,
       1,
       Support.SomeModuleRule,
-      Specification.Operator.all([])
+      Spex.Operator.all([])
     ]
 
   it_behaves_like Shared.EvaluateSpec,

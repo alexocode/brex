@@ -12,7 +12,7 @@ defmodule Spex.Rule do
   end
 
   defprotocol Nestable do
-    @spec aggregator(t()) :: (list(Types.evaluation()) -> Types.evaluation())
+    @spec aggregator(t()) :: (list(boolean()) -> boolean())
     def aggregator(rule)
 
     @spec nested_rules(t()) :: list(t())
@@ -30,6 +30,9 @@ defmodule Spex.Rule do
       value: value
     }
   end
+
+  @spec type(t()) :: module() | nil
+  def type(rule), do: Evaluable.impl_for(rule)
 
   @doc """
   Returns the number of clauses this rule has.

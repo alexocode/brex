@@ -6,7 +6,6 @@ defmodule Spex.Rule.StructSpec do
 
     defstruct [:value]
 
-    @impl Spex.Rule.Struct
     def evaluate(%__MODULE__{value: expected}, value) do
       expected == value
     end

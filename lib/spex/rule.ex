@@ -1,24 +1,19 @@
 defmodule Spex.Rule do
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
   # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
+
+  alias Spex.Types
+
   @type t :: any()
 
   defprotocol Evaluable do
-    @fallback_to_any false
-
     @spec evaluate(t(), Types.value()) :: Types.evaluation()
     def evaluate(rule, value)
   end
 
-  defprotocol Resultable do
-    @fallback_to_any true
-
-    @spec result(t(), Types.value()) :: Types.result()
-    def result(rule, value)
-  end
-
   defprotocol Nestable do
-    @fallback_to_any true
+    @spec aggregator(t()) :: (list(Types.evaluation()) -> Types.evaluation())
+    def aggregator(rule)
 
     @spec nested_rules(t()) :: list(t())
     def nested_rules(rule)
@@ -28,10 +23,13 @@ defmodule Spex.Rule do
   defdelegate evaluate(rule, value), to: Evaluable
 
   @spec result(t(), Types.value()) :: Types.result()
-  defdelegate result(rule, value), to: Resultable
-
-  @spec nested_rules(t()) :: list(t())
-  defdelegate nested_rules(rule), to: Nestable
+  def result(rule, value) do
+    %Spex.Result{
+      evaluation: evaluate(rule, value),
+      rule: rule,
+      value: value
+    }
+  end
 
   @doc """
   Returns the number of clauses this rule has.
@@ -50,10 +48,21 @@ defmodule Spex.Rule do
   3
   """
   @spec number_of_clauses(t() | list(t())) :: non_neg_integer()
+  def number_of_clauses(rules) when is_list(rules) do
+    rules
+    |> Enum.map(&number_of_clauses/1)
+    |> Enum.sum()
+  end
+
   def number_of_clauses(rule) do
-    rule
-    |> nested_rules()
-    |> List.flatten()
-    |> Enum.count()
+    case Nestable.impl_for(rule) do
+      nil ->
+        1
+
+      impl ->
+        rule
+        |> impl.nested_rules()
+        |> number_of_clauses()
+    end
   end
 end

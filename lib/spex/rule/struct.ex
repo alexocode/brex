@@ -17,28 +17,91 @@ defmodule Spex.Rule.Struct do
         end
       end
   """
-  alias Spex.{Rule, Types}
+  alias Spex.Rule
 
   # A struct implementing this behaviour
   @type t :: struct()
 
-  defmacro __using__(_which) do
-    quote do: @after_compile(unquote(__MODULE__))
+  defmacro __using__(opts) do
+    if is_nested?(opts) do
+      use_nested(opts)
+    else
+      use_plain()
+    end
   end
 
-  def __after_compile__(%{module: module} = env, _bytecode) do
-    defimpl_evaluate(module) ||
+  defp is_nested?(opts) do
+    if Keyword.get(opts, :nested), do: true, else: false
+  end
+
+  defp use_nested(opts) do
+    aggregator = Keyword.get(opts, :aggregator)
+    nested = Keyword.get(opts, :nested)
+
+    quote do
+      @after_compile {unquote(__MODULE__), :__defimpl_evaluable_and_nested__}
+
+      unquote(build(:aggregator, aggregator))
+      unquote(build(:nested, nested))
+    end
+  end
+
+  defp build(_, nil), do: nil
+
+  defp build(:aggregator, aggregator) when is_atom(aggregator) do
+    quote do
+      def aggregator(_rule) do
+        &apply(__MODULE__, unquote(aggregator), [&1])
+      end
+    end
+  end
+
+  defp build(:aggregator, aggregator) when is_function(aggregator, 1) do
+    quote do
+      def aggregator(_rule), do: unquote(aggregator)
+    end
+  end
+
+  defp build(:nested, true), do: nil
+
+  defp build(:nested, key) when is_atom(key) do
+    quote do
+      def nested_rules(%{unquote(key) => nested_rules}), do: nested_rules
+    end
+  end
+
+  defp build(option, value) do
+    raise ArgumentError, "Invalid value for option: #{inspect(option)}=#{inspect(value)}"
+  end
+
+  defp use_plain do
+    quote do
+      @after_compile {unquote(__MODULE__), :__defimpl_evaluable__}
+    end
+  end
+
+  def __defimpl_evaluable_and_nested__(%{module: module} = env, bytecode) do
+    __defimpl_evaluable__(env, bytecode)
+
+    defimpl_nestable(module) ||
+      raise CompileError,
+        file: env.file,
+        line: env.line,
+        description:
+          "cannot use #{inspect(__MODULE__)} with `nested` " <>
+            "on module #{inspect(module)} without defining aggregator/1 and nested_rules/1"
+  end
+
+  def __defimpl_evaluable__(%{module: module} = env, _bytecode) do
+    defimpl_evaluable(module) ||
       raise CompileError,
         file: env.file,
         line: env.line,
         description:
           "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} without defining evaluate/2"
-
-    defimpl_result(module)
-    defimpl_number_of_clauses(module)
   end
 
-  defp defimpl_evaluate(module) do
+  defp defimpl_evaluable(module) do
     if function_exported?(module, :evaluate, 2) do
       defimpl Rule.Evaluate, for: module do
         defdelegate evaluate(rule, value), to: module
@@ -46,18 +109,11 @@ defmodule Spex.Rule.Struct do
     end
   end
 
-  defp defimpl_result(module) do
-    if function_exported?(module, :result, 2) do
-      defimpl Rule.Result, for: module do
-        defdelegate result(rule, value), to: module
-      end
-    end
-  end
-
-  defp defimpl_number_of_clauses(module) do
-    if function_exported?(module, :number_of_clauses, 1) do
-      defimpl Rule.NumberOfClauses, for: module do
-        defdelegate number_of_clauses(rule), to: module
+  defp defimpl_nestable(module) do
+    if function_exported?(module, :aggregator, 1) and function_exported?(module, :nested, 1) do
+      defimpl Rule.Nestable, for: module do
+        defdelegate aggregator(rule), to: module
+        defdelegate nested_rules(rule), to: module
       end
     end
   end

@@ -4,15 +4,15 @@ defmodule Spex.Rule.NestedStruct do
     nested = Keyword.get(opts, :nested)
 
     quote do
-      use Spex.Rule.Struct
-
       @after_compile unquote(__MODULE__)
+
+      use Spex.Rule.Struct
 
       unquote(build(:aggregator, aggregator))
       unquote(build(:nested, nested))
 
       def aggregate(rule, results) do
-        aggregator_fn = aggregator(rule)
+        aggregator_fn = __MODULE__.aggregator(rule)
 
         results
         |> Enum.map(&Spex.passed?/1)

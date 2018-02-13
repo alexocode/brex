@@ -3,6 +3,44 @@ defmodule Spex.Rule.NestedStructSpec do
 
   alias Support.Rules.NestedStruct, as: Nested
 
+  describe "invalid NestedStruct rules" do
+    context "with no options" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.NestedStruct
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
+
+    context "with no aggregator but a nested option" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.NestedStruct, nested: :foo
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
+
+    context "with no nested but an aggregator option" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.NestedStruct, aggregator: &Enum.all?/1
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
+  end
+
   defmodule ValidNestedRule do
     use ESpec, async: true, shared: true
 

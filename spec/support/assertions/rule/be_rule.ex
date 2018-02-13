@@ -7,8 +7,8 @@ defmodule Spex.Assertions.Rule.BeRule do
     {is_valid, is_valid}
   end
 
-  defp is_rule?(nil, rule), do: Spex.Rule.is_rule?(rule)
-  defp is_rule?(type, rule), do: type.is_rule_of_type?(rule)
+  defp is_rule?(nil, rule), do: Spex.Rule.type(rule) != nil
+  defp is_rule?(type, rule), do: Spex.Rule.type(rule) == type
 
   defp success_message(rule, type, _, positive) do
     to = if positive, do: "is", else: "is not"

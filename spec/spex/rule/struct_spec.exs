@@ -1,29 +1,7 @@
 defmodule Spex.Rule.StructSpec do
   use ESpec, async: true
 
-  defmodule EqualsRule do
-    use Spex.Rule.Struct
-
-    defstruct [:value]
-
-    def evaluate(%__MODULE__{value: expected}, value) do
-      expected == value
-    end
-  end
-
-  let rule_type: described_module()
-
-  it_behaves_like Shared.IsRuleSpec,
-    valid_rules: [
-      %EqualsRule{value: 42}
-    ],
-    invalid_rules: [
-      :a,
-      1,
-      &is_list/1,
-      Spex.Operator.all([]),
-      Support.SomeModuleRule
-    ]
+  alias Support.Rules.EqualsRule
 
   it_behaves_like Shared.EvaluateSpec,
     rule: %EqualsRule{value: 42},

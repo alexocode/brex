@@ -1,4 +1,5 @@
 # Spex
+[![Build Status](https://travis-ci.org/Zeeker/spex.svg?branch=master)](https://travis-ci.org/Zeeker/spex)
 
 **TODO: Add description**
 

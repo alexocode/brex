@@ -49,8 +49,6 @@ defmodule Spex.Operator.Struct do
 
       defimpl Spex.Operator.Linkable, for: __MODULE__ do
         defdelegate clauses(operator), to: __MODULE__
-        # defdelegate link(operator), to: __MODULE__
-
         defdelegate passed?(results), to: __MODULE__
       end
 

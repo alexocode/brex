@@ -12,57 +12,53 @@ defmodule Spex.Operator do
   @type clause :: Specifiation.Types.rule()
   @type clauses :: list(clause())
 
-  defprotocol Linkable do
-    @spec clauses(Spex.Operator.t()) :: Spex.Operator.clauses()
-    def clauses(operator)
+  @callback new(clauses()) :: t()
 
-    # @spec link(Spex.Operator.t()) :: Spex.Operator.link()
-    # def link(operator)
+  defmacro __using__(opts) do
+    aggregator = Keyword.get(opts, :aggregator)
 
-    @spec passed?(list(boolean())) :: boolean()
-    def passed?(results)
+    clauses =
+      Keyword.get(opts, :clauses, :clauses) ||
+        raise "can't use #{inspect(__MODULE__)} with `clauses` being nil!"
+
+    quote do
+      use Spex.Rule.NestedStruct,
+        aggregator: unquote(aggregator),
+        nested: unquote(clauses)
+
+      @behaviour unquote(__MODULE__)
+
+      def new(clauses) do
+        struct(__MODULE__, %{unquote(clauses) => clauses})
+      end
+
+      defoverridable new: 1
+    end
   end
 
-  @callback new(clauses()) :: t()
-  @callback clauses(t()) :: clauses()
-  # @callback link(Spex.Operator.t()) :: Spex.Operator.link()
-  @callback passed?(list(boolean())) :: boolean()
+  @links [
+    all: Spex.Operator.All,
+    any: Spex.Operator.Any,
+    none: Spex.Operator.None
+  ]
 
-  @links [:all, :any, :none]
-
-  for link <- @links do
-    camelized_link =
-      link
-      |> Atom.to_string()
-      |> Macro.camelize()
-      |> String.to_atom()
-
-    link_module = Module.concat(Linkable, camelized_link)
-
+  for {link, module} <- @links do
     @spec unquote(link)(clauses()) :: t()
     def unquote(link)(clauses) do
-      unquote(link_module).new(clauses)
+      unquote(module).new(clauses)
     end
 
     @spec unquote(link)(clause(), clause()) :: t()
     def unquote(link)(arg1, arg2) do
       unquote(link)([arg1, arg2])
     end
+
+    @spec operator?(t()) :: boolean()
+    def operator?(%{__struct__: unquote(module)}), do: true
   end
 
-  defp link_to_module(link) do
-    camelized_link =
-      link
-      |> Atom.to_string()
-      |> Macro.camelize()
-      |> String.to_atom()
-
-    Module.concat(__MODULE__)
-  end
+  def operator?(_), do: false
 
   @spec clauses(t()) :: clauses()
-  defdelegate clauses(operator), to: Linkable
-
-  @spec operator?(t()) :: boolean()
-  def operator?(operator), do: Linkable.impl_for(operator) != nil
+  defdelegate clauses(operator), to: Spex.Rule.Nestable, as: :nested_rules
 end

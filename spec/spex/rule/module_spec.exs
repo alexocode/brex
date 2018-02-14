@@ -7,8 +7,6 @@ defmodule Spex.Rule.ModuleSpec do
     end
   end
 
-  let rule_type: described_module()
-
   it_behaves_like Shared.IsRuleSpec,
     valid_rules: [
       NotNilRule

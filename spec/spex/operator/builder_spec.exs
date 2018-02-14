@@ -8,6 +8,9 @@ defmodule Spex.Operator.BuilderSpec do
       let :invalid_rule do
         defmodule NoOptions do
           use Spex.Operator
+
+          # Suppress an irrelevant not implemented warning
+          Module.delete_attribute(__MODULE__, :behaviour)
         end
       end
 
@@ -20,6 +23,9 @@ defmodule Spex.Operator.BuilderSpec do
       let :invalid_rule do
         defmodule ClausesButNoAggregator do
           use Spex.Operator, clauses: :foo
+
+          # Suppress an irrelevant not implemented warning
+          Module.delete_attribute(__MODULE__, :behaviour)
         end
       end
 

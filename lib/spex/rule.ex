@@ -69,6 +69,28 @@ defmodule Spex.Rule do
   def type(rule), do: Evaluable.impl_for(rule)
 
   @doc """
+  Returns `{:ok, list(t())}` if the rule implements Nestable and `:error` otherwise.
+
+  ## Examples
+
+      iex> Spex.Rule.nested_rules(Spex.Operator.all([&is_list/1, &is_map/1]))
+      {:ok, [&is_list/1, &is_map/1]}
+
+      iex> Spex.Rule.nested_rules(&is_list/1)
+      :error
+
+      iex> Spex.Rule.nested_rules("foo_bar")
+      :error
+  """
+  @spec nested_rules(t()) :: {:ok, list(t())} | :error
+  def nested_rules(rule) do
+    case Nestable.impl_for(rule) do
+      nil -> :error
+      impl -> {:ok, impl.nested_rules(rule)}
+    end
+  end
+
+  @doc """
   Returns the number of clauses this rule has.
 
   ## Examples
@@ -92,14 +114,9 @@ defmodule Spex.Rule do
   end
 
   def number_of_clauses(rule) do
-    case Nestable.impl_for(rule) do
-      nil ->
-        1
-
-      impl ->
-        rule
-        |> impl.nested_rules()
-        |> number_of_clauses()
+    case nested_rules(rule) do
+      {:ok, nested_rules} -> number_of_clauses(nested_rules)
+      :error -> 1
     end
   end
 end

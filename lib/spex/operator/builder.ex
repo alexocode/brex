@@ -1,7 +1,7 @@
 defmodule Spex.Operator.Builder do
   def build_from_use(opts) do
     aggregator = Keyword.get(opts, :aggregator)
-    rules = Keyword.get(opts, :rules) || Keyword.get(opts, :clauses) || :rules
+    clauses = Keyword.get(opts, :clauses, :clauses)
 
     quote do
       @after_compile unquote(__MODULE__)
@@ -10,8 +10,8 @@ defmodule Spex.Operator.Builder do
       use Spex.Rule.Struct
 
       unquote(build(:aggregator, aggregator))
-      unquote(build(:clauses, rules))
-      unquote(build(:new, rules))
+      unquote(build(:clauses, clauses))
+      unquote(build(:new, clauses))
 
       def aggregate(rule, results) do
         aggregator_fn = __MODULE__.aggregator(rule)
@@ -76,7 +76,7 @@ defmodule Spex.Operator.Builder do
 
   defp build(:new, key) when is_atom(key) do
     quote do
-      def new(rules), do: struct(__MODULE__, %{unquote(key) => rules})
+      def new(clauses), do: struct(__MODULE__, %{unquote(key) => clauses})
     end
   end
 

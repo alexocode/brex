@@ -19,7 +19,7 @@ defmodule Spex.Operator.BuilderSpec do
     context "with no aggregator but a nested option" do
       let :invalid_rule do
         defmodule InvalidRule do
-          use Spex.Operator, rules: :foo
+          use Spex.Operator, clauses: :foo
         end
       end
 
@@ -49,13 +49,13 @@ defmodule Spex.Operator.BuilderSpec do
     let_overridable :rule_module
     let_overridable :clauses
 
-    let_overridable rule: struct(rule_module(), %{rules: clauses()})
+    let_overridable rule: struct(rule_module(), %{clauses: clauses()})
 
     it "should be a rule" do
       expect rule() |> to(be_rule())
     end
 
-    it "should the nested rules" do
+    it "should contain the clauses" do
       rule()
       |> Spex.Operator.Aggregatable.clauses()
       |> should(eq clauses())
@@ -86,19 +86,19 @@ defmodule Spex.Operator.BuilderSpec do
     it_behaves_like ValidOperatorRule
   end
 
-  describe "a nested rule with only aggregator option and nested rules definition" do
-    let rule_module: Operator.AggregatorOptionAndNestedRulesDefintion
+  describe "a nested rule with only aggregator option and clauses definition" do
+    let rule_module: Operator.AggregatorOptionAndClausesDefintion
 
     it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with only nested option and aggregator definition" do
-    let rule_module: Operator.RulesOptionAndAggregatorDefintion
+    let rule_module: Operator.ClausesOptionAndAggregatorDefintion
 
     it_behaves_like ValidOperatorRule
   end
 
-  describe "a nested rule with no options and aggregator and nested rules definitions" do
+  describe "a nested rule with no options and aggregator and clauses definitions" do
     let rule_module: Operator.NoOptionAndBothDefintions
 
     it_behaves_like ValidOperatorRule

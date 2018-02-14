@@ -1,7 +1,7 @@
-defmodule Support.Rules.Operator.RulesOptionAndAggregatorDefintion do
-  use Spex.Operator, rules: :rules
+defmodule Support.Rules.Operator.ClausesOptionAndAggregatorDefintion do
+  use Spex.Operator, clauses: :clauses
 
-  defstruct [:rules]
+  defstruct [:clauses]
 
   def aggregator(_), do: &Enum.all?/1
 end

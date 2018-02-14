@@ -1,9 +1,9 @@
 defmodule Support.Rules.Operator.NoOptionAndBothDefintions do
   use Spex.Operator
 
-  defstruct [:rules]
+  defstruct [:clauses]
 
   def aggregator(_), do: &Enum.all?/1
 
-  def clauses(%{rules: rules}), do: rules
+  def clauses(%{clauses: clauses}), do: clauses
 end

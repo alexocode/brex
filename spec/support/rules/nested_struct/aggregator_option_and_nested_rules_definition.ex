@@ -1,7 +1,7 @@
-defmodule Support.Rules.Operator.AggregatorOptionAndNestedRulesDefintion do
+defmodule Support.Rules.Operator.AggregatorOptionAndClausesDefintion do
   use Spex.Operator, aggregator: &Enum.all?/1
 
-  defstruct [:rules]
+  defstruct [:clauses]
 
-  def clauses(%{rules: rules}), do: rules
+  def clauses(%{clauses: clauses}), do: clauses
 end

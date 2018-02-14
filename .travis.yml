@@ -1,15 +1,23 @@
 language: elixir
+
 elixir:
   - 1.5.0
   - 1.5.1
   - 1.6.0
   - 1.6.1
+
 otp_release:
   - 19.2
   - 20.0
+
+env:
+  - MIX_ENV=test
+
 sudo: false
+
 script:
-  - mix espec
+  - mix coveralls.travis
+
 notifications:
   recipients:
     - swolf.dev@gmail.com

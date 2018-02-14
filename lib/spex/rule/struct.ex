@@ -36,7 +36,7 @@ defmodule Spex.Rule.Struct do
   end
 
   defp is_nested?(opts) do
-    if Keyword.get(opts, :nested), do: true, else: false
+    if Keyword.get(opts, :nested_rules), do: true, else: false
   end
 
   def __after_compile__(%{module: module} = env, _bytecode) do

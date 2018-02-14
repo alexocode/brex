@@ -1,7 +1,7 @@
 defmodule Spex.Rule.OperatorSpec do
   use ESpec, async: true
 
-  alias Support.Rules.Operator, as: Nested
+  alias Support.Rules.Operator
 
   describe "invalid Operator rules" do
     context "with no options" do
@@ -19,7 +19,7 @@ defmodule Spex.Rule.OperatorSpec do
     context "with no aggregator but a nested option" do
       let :invalid_rule do
         defmodule InvalidRule do
-          use Spex.Rule.Operator, nested: :foo
+          use Spex.Rule.Operator, rules: :foo
         end
       end
 
@@ -41,7 +41,7 @@ defmodule Spex.Rule.OperatorSpec do
     end
   end
 
-  defmodule ValidNestedRule do
+  defmodule ValidOperatorRule do
     use ESpec, async: true, shared: true
 
     import Spex.Assertions.Rule
@@ -49,7 +49,7 @@ defmodule Spex.Rule.OperatorSpec do
     let_overridable :rule_module
     let_overridable :nested_rules
 
-    let_overridable rule: struct(rule_module(), %{nested: nested_rules()})
+    let_overridable rule: struct(rule_module(), %{rules: nested_rules()})
 
     it "should be a rule" do
       expect rule() |> to(be_rule())
@@ -81,26 +81,26 @@ defmodule Spex.Rule.OperatorSpec do
   let nested_rules: [&is_list/1, &(length(&1) > 0)]
 
   describe "a nested rule with both options" do
-    let rule_module: Nested.BothOptions
+    let rule_module: Operator.BothOptions
 
-    it_behaves_like ValidNestedRule
+    it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with only aggregator option and nested rules definition" do
-    let rule_module: Nested.AggregatorOptionAndNestedRulesDefintion
+    let rule_module: Operator.AggregatorOptionAndNestedRulesDefintion
 
-    it_behaves_like ValidNestedRule
+    it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with only nested option and aggregator definition" do
-    let rule_module: Nested.NestedOptionAndAggregatorDefintion
+    let rule_module: Operator.RulesOptionAndAggregatorDefintion
 
-    it_behaves_like ValidNestedRule
+    it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with no options and aggregator and nested rules definitions" do
-    let rule_module: Nested.NoOptionAndBothDefintions
+    let rule_module: Operator.NoOptionAndBothDefintions
 
-    it_behaves_like ValidNestedRule
+    it_behaves_like ValidOperatorRule
   end
 end

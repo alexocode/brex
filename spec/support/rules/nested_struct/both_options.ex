@@ -1,7 +1,7 @@
 defmodule Support.Rules.Operator.BothOptions do
   use Spex.Rule.Operator,
     aggregator: &Enum.all?/1,
-    nested: :nested
+    rules: :rules
 
-  defstruct [:nested]
+  defstruct [:rules]
 end

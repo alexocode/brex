@@ -1,7 +1,7 @@
-defmodule Support.Rules.Operator.NestedOptionAndAggregatorDefintion do
-  use Spex.Rule.Operator, nested: :nested
+defmodule Support.Rules.Operator.RulesOptionAndAggregatorDefintion do
+  use Spex.Rule.Operator, rules: :rules
 
-  defstruct [:nested]
+  defstruct [:rules]
 
   def aggregator(_), do: &Enum.all?/1
 end

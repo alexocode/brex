@@ -1,21 +1,24 @@
 defmodule Spex.Rule.Operator do
+  # A struct implementing this behaviour
+  @type t :: struct()
+
+  @callback new(list(Spex.Types.rule())) :: t()
+  @callback aggregator(t()) :: (list(boolean()) -> boolean())
+  @callback nested_rules(t()) :: list(t())
+
   defmacro __using__(opts) do
     aggregator = Keyword.get(opts, :aggregator)
-    nested = Keyword.get(opts, :nested)
+    rules = Keyword.get(opts, :rules) || Keyword.get(opts, :nested_rules) || :rules
 
     quote do
       @after_compile unquote(__MODULE__)
-
       @behaviour unquote(__MODULE__)
 
       use Spex.Rule.Struct
 
       unquote(build(:aggregator, aggregator))
-      unquote(build(:nested, nested))
-
-      def new(rules) do
-        struct(__MODULE__, %{unquote(nested) => rules})
-      end
+      unquote(build(:nested_rules, rules))
+      unquote(build(:new, rules))
 
       def aggregate(rule, results) do
         aggregator_fn = __MODULE__.aggregator(rule)
@@ -72,11 +75,15 @@ defmodule Spex.Rule.Operator do
     end
   end
 
-  defp build(:nested, true), do: nil
-
-  defp build(:nested, key) when is_atom(key) do
+  defp build(:nested_rules, key) when is_atom(key) do
     quote do
       def nested_rules(%{unquote(key) => nested_rules}), do: nested_rules
+    end
+  end
+
+  defp build(:new, key) when is_atom(key) do
+    quote do
+      def new(rules), do: struct(__MODULE__, %{unquote(key) => rules})
     end
   end
 
@@ -90,7 +97,7 @@ defmodule Spex.Rule.Operator do
         file: env.file,
         line: env.line,
         description:
-          "cannot use #{inspect(__MODULE__)} with `nested` " <>
+          "cannot use #{inspect(__MODULE__)} " <>
             "on module #{inspect(module)} without defining aggregator/1 and nested_rules/1"
   end
 

@@ -1,5 +1,7 @@
 defmodule Spex.Operator.Any do
-  use Spex.Operator, aggregator: &Enum.any?/1
+  use Spex.Rule.Operator,
+    aggregator: &Enum.any?/1,
+    nested: :clauses
 
   defstruct [:clauses]
 end

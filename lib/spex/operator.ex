@@ -12,30 +12,6 @@ defmodule Spex.Operator do
   @type clause :: Specifiation.Types.rule()
   @type clauses :: list(clause())
 
-  @callback new(clauses()) :: t()
-
-  defmacro __using__(opts) do
-    aggregator = Keyword.get(opts, :aggregator)
-
-    clauses =
-      Keyword.get(opts, :clauses, :clauses) ||
-        raise "can't use #{inspect(__MODULE__)} with `clauses` being nil!"
-
-    quote do
-      use Spex.Rule.NestedStruct,
-        aggregator: unquote(aggregator),
-        nested: unquote(clauses)
-
-      @behaviour unquote(__MODULE__)
-
-      def new(clauses) do
-        struct(__MODULE__, %{unquote(clauses) => clauses})
-      end
-
-      defoverridable new: 1
-    end
-  end
-
   @links [
     all: Spex.Operator.All,
     any: Spex.Operator.Any,

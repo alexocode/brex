@@ -1,5 +1,5 @@
-defmodule Support.Rules.NestedStruct.BothOptions do
-  use Spex.Rule.NestedStruct,
+defmodule Support.Rules.Operator.BothOptions do
+  use Spex.Rule.Operator,
     aggregator: &Enum.all?/1,
     nested: :nested
 

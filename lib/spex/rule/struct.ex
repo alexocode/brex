@@ -29,7 +29,7 @@ defmodule Spex.Rule.Struct do
 
   defmacro __using__(opts) do
     if is_nested?(opts) do
-      quote do: use(Spex.Rule.NestedStruct, unquote(opts))
+      quote do: use(Spex.Rule.Operator, unquote(opts))
     else
       quote do: use(unquote(__MODULE__))
     end

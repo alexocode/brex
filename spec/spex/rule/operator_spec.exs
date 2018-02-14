@@ -1,74 +1,106 @@
 defmodule Spex.Rule.OperatorSpec do
   use ESpec, async: true
 
-  import Spex.Operator
+  alias Support.Rules.Operator, as: Nested
 
-  defmodule SomeStruct do
-    defstruct []
+  describe "invalid Operator rules" do
+    context "with no options" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.Operator
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
+
+    context "with no aggregator but a nested option" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.Operator, nested: :foo
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
+
+    context "with no nested but an aggregator option" do
+      let :invalid_rule do
+        defmodule InvalidRule do
+          use Spex.Rule.Operator, aggregator: &Enum.all?/1
+        end
+      end
+
+      it "should raise a CompileError" do
+        expect (&invalid_rule/0) |> to(raise_exception CompileError)
+      end
+    end
   end
 
-  it_behaves_like Shared.IsRuleSpec,
-    rule_type: described_module(),
-    valid_rules: [
-      all([&is_list/1, Support.SomeModuleRule]),
-      any([&is_nil/1]),
-      none([&is_function(&1, 1), Support.SomeModuleRule])
-    ],
-    invalid_rules: [
-      :a,
-      1,
-      &is_list/1,
-      fn _ -> true end,
-      Support.SomeModuleRule
-    ]
+  defmodule ValidNestedRule do
+    use ESpec, async: true, shared: true
 
-  describe ".all" do
-    it_behaves_like Shared.EvaluateSpec,
-      rule: all([&String.printable?/1, &(String.length(&1) > 0)]),
-      valid_values: [
-        "foo",
-        "bar",
-        "baz"
-      ],
-      invalid_values: [
-        "",
-        <<0>> <> "foo"
-      ]
+    import Spex.Assertions.Rule
+
+    let_overridable :rule_module
+    let_overridable :nested_rules
+
+    let_overridable rule: struct(rule_module(), %{nested: nested_rules()})
+
+    it "should be a rule" do
+      expect rule() |> to(be_rule())
+    end
+
+    it "should the nested rules" do
+      rule()
+      |> Spex.Rule.Nestable.nested_rules()
+      |> should(eq nested_rules())
+    end
+
+    it "a non empty list should satisfy the rule" do
+      expect [1, 2, 3] |> to(satisfy_rule(rule()))
+    end
+
+    it "a empty list should not satisfy the rule" do
+      expect [] |> to_not(satisfy_rule(rule()))
+    end
+
+    it "a non empty map should not satisfy the rule" do
+      expect %{} |> to_not(satisfy_rule(rule()))
+    end
+
+    it "a string should not satisfy the rule" do
+      expect "foobar" |> to_not(satisfy_rule(rule()))
+    end
   end
 
-  describe ".any" do
-    it_behaves_like Shared.EvaluateSpec,
-      rule: any([&Keyword.keyword?/1, &is_map/1]),
-      valid_values: [
-        %{},
-        [],
-        MapSet.new(),
-        %SomeStruct{},
-        [a: 1]
-      ],
-      invalid_values: [
-        [1, 2, 3],
-        "foo",
-        :foo
-      ]
+  let nested_rules: [&is_list/1, &(length(&1) > 0)]
+
+  describe "a nested rule with both options" do
+    let rule_module: Nested.BothOptions
+
+    it_behaves_like ValidNestedRule
   end
 
-  describe ".none" do
-    it_behaves_like Shared.EvaluateSpec,
-      rule: none([&is_binary/1, &is_atom/1]),
-      valid_values: [
-        %{},
-        [1, 2, 3],
-        %SomeStruct{},
-        1.5,
-        1
-      ],
-      invalid_values: [
-        "foo",
-        <<0>> <> "bar",
-        SomeStruct,
-        List,
-        :foo
-      ]
+  describe "a nested rule with only aggregator option and nested rules definition" do
+    let rule_module: Nested.AggregatorOptionAndNestedRulesDefintion
+
+    it_behaves_like ValidNestedRule
+  end
+
+  describe "a nested rule with only nested option and aggregator definition" do
+    let rule_module: Nested.NestedOptionAndAggregatorDefintion
+
+    it_behaves_like ValidNestedRule
+  end
+
+  describe "a nested rule with no options and aggregator and nested rules definitions" do
+    let rule_module: Nested.NoOptionAndBothDefintions
+
+    it_behaves_like ValidNestedRule
   end
 end

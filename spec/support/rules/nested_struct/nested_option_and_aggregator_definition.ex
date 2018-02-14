@@ -1,5 +1,5 @@
-defmodule Support.Rules.NestedStruct.NestedOptionAndAggregatorDefintion do
-  use Spex.Rule.NestedStruct, nested: :nested
+defmodule Support.Rules.Operator.NestedOptionAndAggregatorDefintion do
+  use Spex.Rule.Operator, nested: :nested
 
   defstruct [:nested]
 

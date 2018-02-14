@@ -1,5 +1,5 @@
-defmodule Support.Rules.NestedStruct.NoOptionAndBothDefintions do
-  use Spex.Rule.NestedStruct
+defmodule Support.Rules.Operator.NoOptionAndBothDefintions do
+  use Spex.Rule.Operator
 
   defstruct [:nested]
 

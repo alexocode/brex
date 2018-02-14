@@ -1,71 +1,105 @@
-# defmodule Spex.Rule.Operator do
-#   @moduledoc """
-#   This rule type contains the evaluation logic for operators which are specified
-#   in `Spex.Operator`.
+defmodule Spex.Rule.Operator do
+  defmacro __using__(opts) do
+    aggregator = Keyword.get(opts, :aggregator)
+    nested = Keyword.get(opts, :nested)
 
-#   It takes these operators and performs the necessary logic to aggregate the
-#   results of all operator clauses.
+    quote do
+      @after_compile unquote(__MODULE__)
 
-#   Supported operators are:
-#   - `all`
-#   - `any`
-#   - `none`
-#   """
-#   use Spex.Rule
+      @behaviour unquote(__MODULE__)
 
-#   import Spex.Result, only: [passed?: 1]
+      use Spex.Rule.Struct
 
-#   alias Spex.{Operator, Result}
+      unquote(build(:aggregator, aggregator))
+      unquote(build(:nested, nested))
 
-#   @type t :: Spex.Operator.t()
+      def new(rules) do
+        struct(__MODULE__, %{unquote(nested) => rules})
+      end
 
-#   @impl Spex.Rule
-#   def is_rule_of_type?(rule) do
-#     Operator.operator?(rule)
-#   end
+      def aggregate(rule, results) do
+        aggregator_fn = __MODULE__.aggregator(rule)
 
-#   @impl Spex.Rule
-#   def evaluate(operator, value) do
-#     transform(operator, with: &Spex.evaluate(&1, value))
-#   end
+        results
+        |> Enum.map(&Spex.passed?/1)
+        |> aggregator_fn.()
+      end
 
-#   defp transform(operator, with: transform) do
-#     evaluated = transform_clauses(operator, transform)
+      def evaluate(rule, value) do
+        results =
+          rule
+          |> nested_rules()
+          |> Enum.map(&Spex.result(&1, value))
 
-#     operator
-#     |> Operator.link!()
-#     |> aggregate_operator_results(evaluated)
-#     |> if do
-#       {:ok, evaluated}
-#     else
-#       {:error, evaluated}
-#     end
-#   end
+        if aggregate(rule, results) do
+          {:ok, results}
+        else
+          {:error, results}
+        end
+      end
 
-#   defp transform_clauses(operator, transform) do
-#     operator
-#     |> Operator.clauses!()
-#     |> Enum.map(transform)
-#   end
+      defoverridable evaluate: 2
+    end
+  end
 
-#   defp aggregate_operator_results(:all, results) do
-#     Enum.all?(results, &passed?/1)
-#   end
+  defp build(_, nil), do: nil
 
-#   defp aggregate_operator_results(:any, results) do
-#     Enum.any?(results, &passed?/1)
-#   end
+  defp build(:aggregator, aggregator) when is_atom(aggregator) do
+    quote do
+      def aggregator(_rule) do
+        &apply(__MODULE__, unquote(aggregator), [&1])
+      end
+    end
+  end
 
-#   defp aggregate_operator_results(:none, results) do
-#     not Enum.any?(results, &passed?/1)
-#   end
+  defp build(:aggregator, {module, function}) when is_atom(module) and is_atom(function) do
+    quote do
+      def aggregator(_rule) do
+        &apply(unquote(module), unquote(function), [&1])
+      end
+    end
+  end
 
-#   @impl Spex.Rule
-#   def result(operator, value) do
-#     %Result{
-#       rule: operator,
-#       evaluation: transform(operator, with: &Spex.result(&1, value)),
-#       value: value
-#     }
-#   end
-# end
+  defp build(:aggregator, {:fn, _, _} = aggregator) do
+    quote do
+      def aggregator(_rule), do: unquote(aggregator)
+    end
+  end
+
+  defp build(:aggregator, {:&, _, _} = aggregator) do
+    quote do
+      def aggregator(_rule), do: unquote(aggregator)
+    end
+  end
+
+  defp build(:nested, true), do: nil
+
+  defp build(:nested, key) when is_atom(key) do
+    quote do
+      def nested_rules(%{unquote(key) => nested_rules}), do: nested_rules
+    end
+  end
+
+  defp build(option, value) do
+    raise ArgumentError, "Invalid value for option: #{inspect(option)}=#{inspect(value)}"
+  end
+
+  def __after_compile__(%{module: module} = env, _bytecode) do
+    defimpl_nestable(module) ||
+      raise CompileError,
+        file: env.file,
+        line: env.line,
+        description:
+          "cannot use #{inspect(__MODULE__)} with `nested` " <>
+            "on module #{inspect(module)} without defining aggregator/1 and nested_rules/1"
+  end
+
+  defp defimpl_nestable(module) do
+    if function_exported?(module, :aggregator, 1) and function_exported?(module, :nested_rules, 1) do
+      defimpl Spex.Rule.Nestable, for: module do
+        defdelegate aggregator(rule), to: module
+        defdelegate nested_rules(rule), to: module
+      end
+    end
+  end
+end

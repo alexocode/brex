@@ -1,120 +1,92 @@
 defmodule Spex.Rule do
-  alias Spex.{Result, Rule, Types}
-
-  rule_types = [
-    Rule.Function,
-    Rule.Module,
-    Rule.Operator,
-    Rule.Struct
-  ]
-
-  @moduledoc """
-  This module represents the central API to evaluate a given rule for a given
-  value.
-
-  ## Rule Types
-
-  It currently supports the following rule types:
-  #{
-    rule_types
-    |> Enum.map(&"- #{inspect(&1)}")
-    |> Enum.join("\n")
-  }
-
-  ## Behaviour
-
-  It also serves as the behaviour for all rule types. For this it provides the
-  following callbacks:
-  - `is_rule_of_type?/1` used to find the correct rule type
-  - `evaluate/2` evaluates the given rule with the given value, returns the
-  result of the evaluation
-  - `result/2` returns a `Spex.Result` containing the evaluation result
-  """
-
   # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
-  @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
+  # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
 
-  @callback is_rule_of_type?(any()) :: boolean()
-  @callback evaluate(t(), Types.value()) :: Types.result_value()
-  @callback result(t(), Types.value()) :: Types.result()
+  alias Spex.Types
 
-  defmacro __using__(_which) do
-    quote do
-      @before_compile unquote(__MODULE__)
-      @behaviour unquote(__MODULE__)
+  @type t :: any()
 
-      def result(rule, value) do
-        unquote(__MODULE__).result(rule, value)
-      end
+  defprotocol Evaluable do
+    @moduledoc """
+    The main rule protocol. Each rule needs to implement this protocol to be
+    considered a rule.
 
-      defoverridable result: 2
-    end
+    Take a look at `Spex.Rule.Struct` for details on implementing struct based
+    custom rules.
+    """
+
+    @spec evaluate(t(), Types.value()) :: Types.evaluation()
+    def evaluate(rule, value)
   end
 
-  defmacro __before_compile__(_env) do
-    quote do
-      def is_rule_of_type?(_other), do: false
-    end
-  end
+  @doc """
+  Calls `Evaluable.evaluate/2` with the given rule and value. This can raise a
+  `Protocol.UndefinedError` if the given rule does not implement `Spex.Rule.Evaluable`.
+  """
+  @spec evaluate(t(), Types.value()) :: Types.evaluation()
+  defdelegate evaluate(rule, value), to: Evaluable
 
-  @rule_types rule_types
-
-  def is_rule?(rule) do
-    Enum.any?(@rule_types, &apply(&1, :is_rule_of_type?, [rule]))
-  end
-
-  def type(rule) do
-    Enum.find(@rule_types, fn type ->
-      type.is_rule_of_type?(rule)
-    end)
-  end
-
-  def evaluate(rule, value) do
-    case type(rule) do
-      nil -> invalid_rule!(rule)
-      type -> type.evaluate(rule, value)
-    end
-  end
-
+  @doc """
+  Calls `evaluate/2` with the given rule and value and wraps it into a
+  `Spex.Result` struct.
+  """
+  @spec result(t(), Types.value()) :: Types.result()
   def result(rule, value) do
-    %Result{
-      rule: rule,
+    %Spex.Result{
       evaluation: evaluate(rule, value),
+      rule: rule,
       value: value
     }
   end
 
-  defp invalid_rule!(rule) do
-    raise ArgumentError, "Invalid rule: #{inspect(rule)}"
-  end
+  @doc """
+  Returns the type or rather the implementation module for
+  `Spex.Rule.Evaluable`.
+
+  ## Examples
+
+      iex> Spex.Rule.type(&is_list/1)
+      Spex.Rule.Evaluable.Function
+
+      iex> Spex.Rule.type(SomeModuleRule)
+      Spex.Rule.Evaluable.Atom
+
+      iex> Spex.Rule.type(Spex.Operator.All.new([]))
+      Spex.Rule.Evaluable.Spex.Operator.All
+
+      iex> Spex.Rule.type("something")
+      nil
+  """
+  @spec type(t()) :: module() | nil
+  def type(rule), do: Evaluable.impl_for(rule)
 
   @doc """
   Returns the number of clauses this rule has.
 
   ## Examples
 
-  iex> Spex.number_of_clauses([])
-  0
+      iex> Spex.Rule.number_of_clauses([])
+      0
 
-  iex> rules = [fn _ -> true end]
-  iex> Spex.number_of_clauses(rules)
-  1
+      iex> rules = [fn _ -> true end]
+      iex> Spex.Rule.number_of_clauses(rules)
+      1
 
-  iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
-  iex> Spex.number_of_clauses(rules)
-  3
+      iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
+      iex> Spex.Rule.number_of_clauses(rules)
+      3
   """
-  @spec number_of_clauses(t() | list(t)) :: non_neg_integer()
-  # TODO: Move this into the rule types ...
+  @spec number_of_clauses(t() | list(t())) :: non_neg_integer()
   def number_of_clauses(rules) when is_list(rules) do
-    Enum.reduce(rules, 0, &(&2 + number_of_clauses(&1)))
+    rules
+    |> Enum.map(&number_of_clauses/1)
+    |> Enum.sum()
   end
 
-  def number_of_clauses({_operator, clauses}) do
-    number_of_clauses(clauses)
-  end
-
-  def number_of_clauses(_) do
-    1
+  def number_of_clauses(rule) do
+    case Spex.Operator.clauses(rule) do
+      {:ok, clauses} -> number_of_clauses(clauses)
+      :error -> 1
+    end
   end
 end

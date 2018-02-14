@@ -7,105 +7,74 @@ defmodule Spex.Operator do
   - `none` no given rule has to be valid (`not`)
   """
 
-  @type t :: {link(), clauses()}
-  @type link :: :all | :any | :none
+  # A struct implementing this behaviour
+  @type t :: struct()
+
   @type clause :: Specifiation.Types.rule()
   @type clauses :: list(clause())
 
-  @links [:all, :any, :none]
+  @callback new(clauses()) :: t()
+  @callback aggregator(t()) :: (list(boolean()) -> boolean())
+  @callback clauses(t()) :: list(Spex.Types.rule())
 
-  @spec clauses(t(), link() | nil) :: clauses()
-  def clauses(operator, expected_link \\ nil)
+  defprotocol Aggregatable do
+    @spec aggregator(t()) :: (list(boolean()) -> boolean())
+    def aggregator(rule)
 
-  @spec link(t(), link() | nil) :: link()
-  def link(operator, expected_link \\ nil)
+    @spec clauses(t()) :: list(t())
+    def clauses(rule)
+  end
 
-  for link <- @links do
-    @spec unquote(link)() :: unquote(link)
-    def unquote(link)(), do: unquote(link)
+  defmacro __using__(opts) do
+    Spex.Operator.Builder.build_from_use(opts)
+  end
 
+  operators = [
+    all: Spex.Operator.All,
+    any: Spex.Operator.Any,
+    none: Spex.Operator.None
+  ]
+
+  for {link, module} <- operators do
     @spec unquote(link)(clauses()) :: t()
     def unquote(link)(clauses) do
-      {unquote(link), List.wrap(clauses)}
+      unquote(module).new(clauses)
     end
 
     @spec unquote(link)(clause(), clause()) :: t()
     def unquote(link)(arg1, arg2) do
       unquote(link)([arg1, arg2])
     end
+
+    @spec operator?(t()) :: boolean()
+    def operator?(%{__struct__: unquote(module)}), do: true
   end
 
-  for link <- @links do
-    def clauses({unquote(link), clauses}, nil), do: {:ok, clauses}
-    def clauses({unquote(link), clauses}, unquote(link)), do: {:ok, clauses}
-  end
+  def operator?(_), do: false
 
-  def clauses({actual, _clauses}, expected) when actual in @links and expected in @links do
-    unexpected_operator(actual, expected)
-  end
+  @spec clauses!(t()) :: clauses()
+  defdelegate clauses!(operator), to: Aggregatable, as: :clauses
 
-  def clauses(_operator, expected) when expected not in [nil | @links] do
-    invalid_expected(expected)
-  end
+  @doc """
+  Returns `{:ok, list(t())}` if the rule implements Spex.Operator.Aggregatable
+  and `:error` otherwise.
 
-  def clauses(other, _expected) do
-    invalid_operator(other)
-  end
+  ## Examples
 
-  def clauses!(operator, expected_operator \\ nil) do
-    case clauses(operator, expected_operator) do
-      {:ok, clauses} ->
-        clauses
+  iex> Spex.Operator.clauses(Spex.Operator.all([&is_list/1, &is_map/1]))
+  {:ok, [&is_list/1, &is_map/1]}
 
-      {:error, reason} ->
-        raise ArgumentError,
-              "Can't extract operator clauses from `#{inspect(operator)}`" <>
-                ", received error: #{inspect(reason)}"
+  iex> Spex.Operator.clauses(&is_list/1)
+  :error
+
+  iex> Spex.Operator.clauses("foo_bar")
+  :error
+  """
+  @spec clauses(t()) :: {:ok, clauses()} | :error
+  def clauses(operator) do
+    case Aggregatable.impl_for(operator) do
+      nil -> :error
+      impl -> {:ok, impl.clauses(operator)}
     end
-  end
-
-  for link <- @links do
-    def link({unquote(link), _clauses}, nil), do: {:ok, unquote(link)}
-    def link({unquote(link), _clauses}, unquote(link)), do: {:ok, unquote(link)}
-  end
-
-  def link({actual, _clauses}, expected) when actual in @links and expected in @links do
-    unexpected_operator(actual, expected)
-  end
-
-  def link(_operator, expected) when expected not in [nil | @links] do
-    invalid_expected(expected)
-  end
-
-  def link(other, _expected) do
-    invalid_operator(other)
-  end
-
-  def link!(operator, expected_operator \\ nil) do
-    case link(operator, expected_operator) do
-      {:ok, link} ->
-        link
-
-      {:error, reason} ->
-        raise ArgumentError,
-              "Can't extract operator link from `#{inspect(operator)}`" <>
-                ", received error: #{inspect(reason)}"
-    end
-  end
-
-  @spec operator?(t()) :: boolean()
-  def operator?(operator), do: match?({:ok, _link}, link(operator))
-  def operator?(operator, link), do: match?({:ok, ^link}, link(operator))
-
-  defp unexpected_operator(actual, expected) do
-    {:error, {:unexpected_operator, expected: expected, actual: actual}}
-  end
-
-  defp invalid_expected(expected_link) do
-    {:error, {:invalid_expected_link, expected_link}}
-  end
-
-  defp invalid_operator(invalid) do
-    {:error, {:invalid_operator, invalid}}
   end
 end

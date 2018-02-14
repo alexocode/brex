@@ -3,6 +3,8 @@ defmodule Spex.Rule.Struct do
   This module contains the behaviour to specify a Spex rule with some
   state by making use of structs.
 
+  # TODO: Change this!
+
   You can __use__ this module to define your own struct based rules:
 
       defmodule MyRule do
@@ -15,38 +17,30 @@ defmodule Spex.Rule.Struct do
         end
       end
   """
-  use Spex.Rule
-
-  alias Spex.Types
-
-  @callback evaluate(struct(), Types.value()) :: Types.result()
 
   # A struct implementing this behaviour
   @type t :: struct()
 
-  defmacro __using__(_which) do
-    quote location: :keep do
-      @before_compile unquote(__MODULE__)
-      @behaviour unquote(__MODULE__)
+  defmacro __using__(_opts) do
+    quote do
+      @after_compile unquote(__MODULE__)
     end
   end
 
-  defmacro __before_compile__(_env) do
-    # include default fallback functions at end, with lowest precedence
-    quote generated: true, location: :keep do
-      def evaluate(other, value) do
-        {:error, {:non_matching_other_value, other, value}}
+  def __after_compile__(%{module: module} = env, _bytecode) do
+    defimpl_evaluable(module) ||
+      raise CompileError,
+        file: env.file,
+        line: env.line,
+        description:
+          "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} without defining evaluate/2"
+  end
+
+  defp defimpl_evaluable(module) do
+    if function_exported?(module, :evaluate, 2) do
+      defimpl Spex.Rule.Evaluable, for: module do
+        defdelegate evaluate(rule, value), to: module
       end
     end
-  end
-
-  @impl Spex.Rule
-  def is_rule_of_type?(%_{} = struct) do
-    function_exported?(struct.__struct__, :evaluate, 2)
-  end
-
-  @impl Spex.Rule
-  def evaluate(struct, value) do
-    struct.__struct__.evaluate(struct, value)
   end
 end

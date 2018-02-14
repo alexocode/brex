@@ -16,6 +16,6 @@ defmodule Spex.Operator.AnySpec do
       "l33t",
       42,
       :a,
-      MapSet.new()
+      <<1, 2, 3>>
     ]
 end

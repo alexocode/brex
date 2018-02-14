@@ -6,7 +6,7 @@ defmodule Spex.Operator.BuilderSpec do
   describe "invalid Operator rules" do
     context "with no options" do
       let :invalid_rule do
-        defmodule InvalidRule do
+        defmodule NoOptions do
           use Spex.Operator
         end
       end
@@ -16,22 +16,10 @@ defmodule Spex.Operator.BuilderSpec do
       end
     end
 
-    context "with no aggregator but a nested option" do
+    context "with no aggregator but a clauses option" do
       let :invalid_rule do
-        defmodule InvalidRule do
+        defmodule ClausesButNoAggregator do
           use Spex.Operator, clauses: :foo
-        end
-      end
-
-      it "should raise a CompileError" do
-        expect (&invalid_rule/0) |> to(raise_exception CompileError)
-      end
-    end
-
-    context "with no nested but an aggregator option" do
-      let :invalid_rule do
-        defmodule InvalidRule do
-          use Spex.Operator, aggregator: &Enum.all?/1
         end
       end
 
@@ -80,27 +68,21 @@ defmodule Spex.Operator.BuilderSpec do
 
   let clauses: [&is_list/1, &(length(&1) > 0)]
 
-  describe "a nested rule with both options" do
-    let rule_module: Operators.BothOptions
+  operators = %{
+    "a nested rule with both options" => Operators.BothOptions,
+    "a nested rule with only aggregator option and clauses definition" =>
+      Operators.AggregatorOptionAndClausesDefintion,
+    "a nested rule with only aggregator option no definitions" =>
+      Operators.AggregatorOptionAndNoDefintion,
+    "a nested rule with only clauses option and aggregator definition" =>
+      Operators.ClausesOptionAndAggregatorDefintion,
+    "a nested rule with no options and aggregator and clauses definitions" =>
+      Operators.NoOptionAndBothDefintions
+  }
 
-    it_behaves_like ValidOperatorRule
-  end
-
-  describe "a nested rule with only aggregator option and clauses definition" do
-    let rule_module: Operators.AggregatorOptionAndClausesDefintion
-
-    it_behaves_like ValidOperatorRule
-  end
-
-  describe "a nested rule with only nested option and aggregator definition" do
-    let rule_module: Operators.ClausesOptionAndAggregatorDefintion
-
-    it_behaves_like ValidOperatorRule
-  end
-
-  describe "a nested rule with no options and aggregator and clauses definitions" do
-    let rule_module: Operators.NoOptionAndBothDefintions
-
-    it_behaves_like ValidOperatorRule
+  for {desc, module} <- operators do
+    describe desc do
+      it_behaves_like ValidOperatorRule, rule_module: unquote(module)
+    end
   end
 end

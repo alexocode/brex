@@ -34,7 +34,7 @@ defmodule Spex.Operator.Builder do
         end
       end
 
-      defoverridable evaluate: 2
+      defoverridable evaluate: 2, clauses: 1
     end
   end
 

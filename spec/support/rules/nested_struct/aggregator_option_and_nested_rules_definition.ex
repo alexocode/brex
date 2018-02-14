@@ -3,5 +3,5 @@ defmodule Support.Rules.Operator.AggregatorOptionAndNestedRulesDefintion do
 
   defstruct [:rules]
 
-  def nested_rules(%{rules: rules}), do: rules
+  def clauses(%{rules: rules}), do: rules
 end

@@ -5,5 +5,5 @@ defmodule Support.Rules.Operator.NoOptionAndBothDefintions do
 
   def aggregator(_), do: &Enum.all?/1
 
-  def nested_rules(%{rules: rules}), do: rules
+  def clauses(%{rules: rules}), do: rules
 end

@@ -85,7 +85,7 @@ defmodule Spex.Rule do
 
   def number_of_clauses(rule) do
     case Spex.Operator.clauses(rule) do
-      {:ok, nested_rules} -> number_of_clauses(nested_rules)
+      {:ok, clauses} -> number_of_clauses(clauses)
       :error -> 1
     end
   end

@@ -1,7 +1,7 @@
 defmodule Spex.Rule.FunctionSpec do
   use ESpec, async: true
 
-  let rule_type: described_module()
+  let rule_type: Spex.Rule.Evaluable.Function
 
   it_behaves_like Shared.IsRuleSpec,
     valid_rules: [

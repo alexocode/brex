@@ -2,9 +2,6 @@ defmodule Spex.Rule.ModuleSpec do
   use ESpec, async: true
 
   defmodule NotNilRule do
-    use Spex.Rule.Module
-
-    @impl Spex.Rule.Module
     def evaluate(value) do
       not is_nil(value)
     end
@@ -35,9 +32,6 @@ defmodule Spex.Rule.ModuleSpec do
     ]
 
   defmodule RaisingRule do
-    use Spex.Rule.Module
-
-    @impl true
     def evaluate(_value) do
       raise "Ain't nobody got time for that!"
     end
@@ -55,9 +49,6 @@ defmodule Spex.Rule.ModuleSpec do
     ]
 
   defmodule ThrowingRule do
-    use Spex.Rule.Module
-
-    @impl true
     def evaluate(value), do: throw(value)
   end
 

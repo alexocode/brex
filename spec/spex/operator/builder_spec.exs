@@ -1,7 +1,7 @@
 defmodule Spex.Operator.BuilderSpec do
   use ESpec, async: true
 
-  alias Support.Rules.Operator
+  alias Support.Operators
 
   describe "invalid Operator rules" do
     context "with no options" do
@@ -81,25 +81,25 @@ defmodule Spex.Operator.BuilderSpec do
   let clauses: [&is_list/1, &(length(&1) > 0)]
 
   describe "a nested rule with both options" do
-    let rule_module: Operator.BothOptions
+    let rule_module: Operators.BothOptions
 
     it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with only aggregator option and clauses definition" do
-    let rule_module: Operator.AggregatorOptionAndClausesDefintion
+    let rule_module: Operators.AggregatorOptionAndClausesDefintion
 
     it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with only nested option and aggregator definition" do
-    let rule_module: Operator.ClausesOptionAndAggregatorDefintion
+    let rule_module: Operators.ClausesOptionAndAggregatorDefintion
 
     it_behaves_like ValidOperatorRule
   end
 
   describe "a nested rule with no options and aggregator and clauses definitions" do
-    let rule_module: Operator.NoOptionAndBothDefintions
+    let rule_module: Operators.NoOptionAndBothDefintions
 
     it_behaves_like ValidOperatorRule
   end

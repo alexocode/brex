@@ -1,4 +1,4 @@
-defmodule Support.Rules.Operator.ClausesOptionAndAggregatorDefintion do
+defmodule Support.Operators.ClausesOptionAndAggregatorDefintion do
   use Spex.Operator, clauses: :clauses
 
   defstruct [:clauses]

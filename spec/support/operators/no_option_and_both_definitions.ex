@@ -1,4 +1,4 @@
-defmodule Support.Rules.Operator.NoOptionAndBothDefintions do
+defmodule Support.Operators.NoOptionAndBothDefintions do
   use Spex.Operator
 
   defstruct [:clauses]

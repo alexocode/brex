@@ -5,9 +5,16 @@ defmodule Spex.Mixfile do
     [
       app: :spex,
       version: "0.1.0",
-      elixir: "~> 1.4",
+      elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      preferred_cli_env: [espec: :test],
+      preferred_cli_env: [
+        espec: :test,
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+      test_coverage: [tool: ExCoveralls],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
@@ -28,6 +35,7 @@ defmodule Spex.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:excoveralls, "~> 0.8", only: :test},
       {:espec, github: "antonmi/espec", only: :test}
     ]
   end

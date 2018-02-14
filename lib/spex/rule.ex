@@ -7,6 +7,14 @@ defmodule Spex.Rule do
   @type t :: any()
 
   defprotocol Evaluable do
+    @moduledoc """
+    The main rule protocol. Each rule needs to implement this protocol to be
+    considered a rule.
+
+    Take a look at `Spex.Rule.Struct` for details on implementing struct based
+    custom rules.
+    """
+
     @spec evaluate(t(), Types.value()) :: Types.evaluation()
     def evaluate(rule, value)
   end
@@ -19,9 +27,17 @@ defmodule Spex.Rule do
     def nested_rules(rule)
   end
 
+  @doc """
+  Calls `Evaluable.evaluate/2` with the given rule and value. This can raise a
+  `Protocol.UndefinedError` if the given rule does not implement `Spex.Rule.Evaluable`.
+  """
   @spec evaluate(t(), Types.value()) :: Types.evaluation()
   defdelegate evaluate(rule, value), to: Evaluable
 
+  @doc """
+  Calls `evaluate/2` with the given rule and value and wraps it into a
+  `Spex.Result` struct.
+  """
   @spec result(t(), Types.value()) :: Types.result()
   def result(rule, value) do
     %Spex.Result{

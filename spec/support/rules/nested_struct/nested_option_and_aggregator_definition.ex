@@ -1,5 +1,5 @@
 defmodule Support.Rules.Operator.RulesOptionAndAggregatorDefintion do
-  use Spex.Rule.Operator, rules: :rules
+  use Spex.Operator, rules: :rules
 
   defstruct [:rules]
 

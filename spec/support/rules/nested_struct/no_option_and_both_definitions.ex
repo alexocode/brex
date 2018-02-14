@@ -1,5 +1,5 @@
 defmodule Support.Rules.Operator.NoOptionAndBothDefintions do
-  use Spex.Rule.Operator
+  use Spex.Operator
 
   defstruct [:rules]
 

@@ -1,4 +1,4 @@
-defmodule Spex.Rule.OperatorSpec do
+defmodule Spex.Operator.BuilderSpec do
   use ESpec, async: true
 
   alias Support.Rules.Operator
@@ -7,7 +7,7 @@ defmodule Spex.Rule.OperatorSpec do
     context "with no options" do
       let :invalid_rule do
         defmodule InvalidRule do
-          use Spex.Rule.Operator
+          use Spex.Operator
         end
       end
 
@@ -19,7 +19,7 @@ defmodule Spex.Rule.OperatorSpec do
     context "with no aggregator but a nested option" do
       let :invalid_rule do
         defmodule InvalidRule do
-          use Spex.Rule.Operator, rules: :foo
+          use Spex.Operator, rules: :foo
         end
       end
 
@@ -31,7 +31,7 @@ defmodule Spex.Rule.OperatorSpec do
     context "with no nested but an aggregator option" do
       let :invalid_rule do
         defmodule InvalidRule do
-          use Spex.Rule.Operator, aggregator: &Enum.all?/1
+          use Spex.Operator, aggregator: &Enum.all?/1
         end
       end
 
@@ -47,9 +47,9 @@ defmodule Spex.Rule.OperatorSpec do
     import Spex.Assertions.Rule
 
     let_overridable :rule_module
-    let_overridable :nested_rules
+    let_overridable :clauses
 
-    let_overridable rule: struct(rule_module(), %{rules: nested_rules()})
+    let_overridable rule: struct(rule_module(), %{rules: clauses()})
 
     it "should be a rule" do
       expect rule() |> to(be_rule())
@@ -57,8 +57,8 @@ defmodule Spex.Rule.OperatorSpec do
 
     it "should the nested rules" do
       rule()
-      |> Spex.Rule.Nestable.nested_rules()
-      |> should(eq nested_rules())
+      |> Spex.Operator.Aggregatable.clauses()
+      |> should(eq clauses())
     end
 
     it "a non empty list should satisfy the rule" do
@@ -78,7 +78,7 @@ defmodule Spex.Rule.OperatorSpec do
     end
   end
 
-  let nested_rules: [&is_list/1, &(length(&1) > 0)]
+  let clauses: [&is_list/1, &(length(&1) > 0)]
 
   describe "a nested rule with both options" do
     let rule_module: Operator.BothOptions

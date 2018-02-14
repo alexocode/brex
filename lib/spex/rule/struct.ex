@@ -21,22 +21,10 @@ defmodule Spex.Rule.Struct do
   # A struct implementing this behaviour
   @type t :: struct()
 
-  defmacro __using__([]) do
+  defmacro __using__(_opts) do
     quote do
       @after_compile unquote(__MODULE__)
     end
-  end
-
-  defmacro __using__(opts) do
-    if is_nested?(opts) do
-      quote do: use(Spex.Rule.Operator, unquote(opts))
-    else
-      quote do: use(unquote(__MODULE__))
-    end
-  end
-
-  defp is_nested?(opts) do
-    if Keyword.get(opts, :nested_rules), do: true, else: false
   end
 
   def __after_compile__(%{module: module} = env, _bytecode) do

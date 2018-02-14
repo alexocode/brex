@@ -19,14 +19,6 @@ defmodule Spex.Rule do
     def evaluate(rule, value)
   end
 
-  defprotocol Nestable do
-    @spec aggregator(t()) :: (list(boolean()) -> boolean())
-    def aggregator(rule)
-
-    @spec nested_rules(t()) :: list(t())
-    def nested_rules(rule)
-  end
-
   @doc """
   Calls `Evaluable.evaluate/2` with the given rule and value. This can raise a
   `Protocol.UndefinedError` if the given rule does not implement `Spex.Rule.Evaluable`.
@@ -69,28 +61,6 @@ defmodule Spex.Rule do
   def type(rule), do: Evaluable.impl_for(rule)
 
   @doc """
-  Returns `{:ok, list(t())}` if the rule implements Nestable and `:error` otherwise.
-
-  ## Examples
-
-      iex> Spex.Rule.nested_rules(Spex.Operator.all([&is_list/1, &is_map/1]))
-      {:ok, [&is_list/1, &is_map/1]}
-
-      iex> Spex.Rule.nested_rules(&is_list/1)
-      :error
-
-      iex> Spex.Rule.nested_rules("foo_bar")
-      :error
-  """
-  @spec nested_rules(t()) :: {:ok, list(t())} | :error
-  def nested_rules(rule) do
-    case Nestable.impl_for(rule) do
-      nil -> :error
-      impl -> {:ok, impl.nested_rules(rule)}
-    end
-  end
-
-  @doc """
   Returns the number of clauses this rule has.
 
   ## Examples
@@ -114,7 +84,7 @@ defmodule Spex.Rule do
   end
 
   def number_of_clauses(rule) do
-    case nested_rules(rule) do
+    case Spex.Operator.clauses(rule) do
       {:ok, nested_rules} -> number_of_clauses(nested_rules)
       :error -> 1
     end

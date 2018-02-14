@@ -1,5 +1,5 @@
 defmodule Support.Rules.Operator.BothOptions do
-  use Spex.Rule.Operator,
+  use Spex.Operator,
     aggregator: &Enum.all?/1,
     rules: :rules
 

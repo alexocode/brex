@@ -2,7 +2,7 @@ defmodule Spex.Assertions.Rule.SatisfyRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
-  defp match(value, {rule, nil}) do
+  defp match(value, {rule, :any}) do
     match(value, {rule, Spex.Rule})
   end
 

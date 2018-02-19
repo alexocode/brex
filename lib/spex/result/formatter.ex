@@ -17,12 +17,17 @@ defmodule Spex.Result.Formatter do
 
   defmacro __using__(_which) do
     quote location: :keep do
+      @before_compile unquote(__MODULE__)
       @behaviour unquote(__MODULE__)
 
       alias Spex.Result
 
-      import unquote(__MODULE__)
+      import unquote(__MODULE__), only: [invalid_result!: 1]
+    end
+  end
 
+  def __before_compile__(_env) do
+    quote location: :keep do
       def format(%Result{} = single_result) do
         single_result
         |> List.wrap()

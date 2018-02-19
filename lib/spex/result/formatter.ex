@@ -4,13 +4,16 @@ defmodule Spex.Result.Formatter do
   reduces them to whatever the formatter wants to.
 
   When "used" the module provides a `format/1` clause which takes a single
-  result, ensures that it's a two value tuple and wraps it in a list.
+  result, ensures that it's a `Spex.Result` struct and wraps it in a list. These
+  defs have the lowest precedence and can be overridden as you see fit.
 
-  Furthermore it provides a `invalid_result!` function which raises an
-  `ArgumentError` with an informative error message.
+  The last `format/1` clauses matches on anything and calls the imported
+  `invalid_result!/1` function which raises an `ArgumentError` with an
+  informative message.
 
-  These are the default formatters:
-  - `Spex.Result.Formatter.Boolean`
+  ## Default Formatters
+
+  - `Spex.Result.Formatter.Rules`
   """
 
   @callback format(list(Spex.Types.result())) :: any()

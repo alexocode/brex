@@ -52,6 +52,15 @@ defmodule Spex.Operator do
 
   def operator?(_), do: false
 
+  @doc """
+  Returns the rules contained in the Operator. Raises a `Protocol.UndefinedError`
+  if the given value does not implement `Spex.Operator.Aggregatable`.
+
+  ## Examples
+
+      iex> Spex.Operator.clauses!(Spex.Operator.all([&is_list/1, &is_map/1]))
+      [&is_list/1, &is_map/1]
+  """
   @spec clauses!(t()) :: clauses()
   defdelegate clauses!(operator), to: Aggregatable, as: :clauses
 
@@ -61,14 +70,14 @@ defmodule Spex.Operator do
 
   ## Examples
 
-  iex> Spex.Operator.clauses(Spex.Operator.all([&is_list/1, &is_map/1]))
-  {:ok, [&is_list/1, &is_map/1]}
+      iex> Spex.Operator.clauses(Spex.Operator.all([&is_list/1, &is_map/1]))
+      {:ok, [&is_list/1, &is_map/1]}
 
-  iex> Spex.Operator.clauses(&is_list/1)
-  :error
+      iex> Spex.Operator.clauses(&is_list/1)
+      :error
 
-  iex> Spex.Operator.clauses("foo_bar")
-  :error
+      iex> Spex.Operator.clauses("foo_bar")
+      :error
   """
   @spec clauses(t()) :: {:ok, clauses()} | :error
   def clauses(operator) do

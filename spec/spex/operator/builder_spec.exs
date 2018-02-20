@@ -33,6 +33,20 @@ defmodule Spex.Operator.BuilderSpec do
         expect (&invalid_rule/0) |> to(raise_exception CompileError)
       end
     end
+
+    context "with both options but a string as clauses value" do
+      let :invalid_rule do
+        defmodule InvalidClausesValue do
+          use Spex.Operator, aggregator: &Enum.all?/1, clauses: "Can't use this"
+        end
+      end
+
+      it "should raise a CompileError" do
+        expected_message = "Invalid value for option `:clauses`: \"Can't use this\""
+
+        expect (&invalid_rule/0) |> to(raise_exception ArgumentError, expected_message)
+      end
+    end
   end
 
   defmodule ValidOperatorRule do

@@ -81,7 +81,7 @@ defmodule Spex.Operator.Builder do
   end
 
   defp build(option, value) do
-    raise ArgumentError, "Invalid value for option: #{inspect(option)}=#{inspect(value)}"
+    raise ArgumentError, "Invalid value for option `#{inspect(option)}`: #{inspect(value)}"
   end
 
   def __after_compile__(%{module: module} = env, _bytecode) do

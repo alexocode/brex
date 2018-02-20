@@ -29,15 +29,16 @@ defmodule Spex.Result.Formatter.Rules do
       ...> ]
       iex> Spex.Result.Formatter.Rules.format(results)
       [&is_list/1, %Spex.Operator.None{clauses: [&Keyword.keyword?/1]}]
+
+
+      iex> Spex.Result.Formatter.Rules.format([:foo])
+      ** (ArgumentError) Invalid result! Expected a list of or single `Spex.Result` struct but received: [:foo]
+          (spex) lib/spex/result/formatter.ex:45: Spex.Result.Formatter.invalid_result!/1
+          (elixir) lib/enum.ex:1294: Enum."-map/2-lists^map/1-0-"/2
   """
 
   use Spex.Result.Formatter
 
   @impl true
-  def format(results) do
-    Enum.map(results, &extract_rule/1)
-  end
-
-  defp extract_rule(%Result{rule: rule}), do: rule
-  defp extract_rule(other), do: invalid_result!(other)
+  def format(%Result{rule: rule}), do: rule
 end

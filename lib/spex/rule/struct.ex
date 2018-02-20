@@ -28,12 +28,23 @@ defmodule Spex.Rule.Struct do
   end
 
   def __after_compile__(%{module: module} = env, _bytecode) do
+    is_struct(module) ||
+      raise CompileError,
+        file: env.file,
+        line: env.line,
+        description:
+          "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} which is not a struct"
+
     defimpl_evaluable(module) ||
       raise CompileError,
         file: env.file,
         line: env.line,
         description:
           "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} without defining evaluate/2"
+  end
+
+  defp is_struct(module) do
+    function_exported?(module, :__struct__, 0) and function_exported?(module, :__struct__, 1)
   end
 
   defp defimpl_evaluable(module) do

@@ -54,7 +54,10 @@ defmodule Spex.Operator.BuilderSpec do
 
     import Spex.Assertions.Rule
 
+    alias Spex.Operator.Aggregatable
+
     let_overridable :rule_module
+    let_overridable :aggregator
     let_overridable :clauses
 
     let_overridable rule: struct(rule_module(), %{clauses: clauses()})
@@ -63,9 +66,15 @@ defmodule Spex.Operator.BuilderSpec do
       expect rule() |> to(be_rule())
     end
 
+    it "should contain the aggregator" do
+      rule()
+      |> Aggregatable.aggregator()
+      |> should(eq aggregator())
+    end
+
     it "should contain the clauses" do
       rule()
-      |> Spex.Operator.Aggregatable.clauses()
+      |> Aggregatable.clauses()
       |> should(eq clauses())
     end
 
@@ -102,7 +111,9 @@ defmodule Spex.Operator.BuilderSpec do
 
   for {desc, module} <- operators do
     describe desc do
-      it_behaves_like ValidOperatorRule, rule_module: unquote(module)
+      it_behaves_like ValidOperatorRule,
+        rule_module: unquote(module),
+        aggregator: &Enum.all?/1
     end
   end
 end

@@ -29,12 +29,10 @@ defmodule Spex.Result.Formatter do
     end
   end
 
-  def __before_compile__(_env) do
+  defmacro __before_compile__(_env) do
     quote location: :keep do
-      def format(%Result{} = single_result) do
-        single_result
-        |> List.wrap()
-        |> format()
+      def format(results) when is_list(results) do
+        Enum.map(results, &format/1)
       end
 
       def format(unknown_result) when not is_list(unknown_result) do
@@ -45,7 +43,6 @@ defmodule Spex.Result.Formatter do
 
   def invalid_result!(result) do
     raise ArgumentError,
-          "Invalid evaluation result! Expects a `Spex.Result` struct. " <>
-            "Instead received: #{inspect(result)}"
+          "Invalid result! Expected a `Spex.Result` struct but received: #{inspect(result)}"
   end
 end

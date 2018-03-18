@@ -30,7 +30,7 @@ defmodule Spex.Rule.StructSpec do
         expect (&invalid_rule/0)
                |> to(
                  raise_exception CompileError,
-                                 "spec/spex/rule/struct_spec.exs:22: cannot use Spex.Rule.Struct on module NoEvaluateFunction without defining evaluate/2"
+                                 "spec/spex/rule/struct_spec.exs:22: cannot use Spex.Rule.Struct on module Spex.Rule.StructSpec.NoEvaluateFunction without defining evaluate/2"
                )
       end
     end

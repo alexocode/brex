@@ -30,7 +30,7 @@ defmodule Spex.Rule.ModuleSpec do
     ]
 
   describe "an arbitrary atom" do
-    subject do: Spex.evaluate(:an_arbitrary_atom, :anything)
+    subject do: evaluate(:an_arbitrary_atom, :anything)
 
     it "should raise an UndefinedFunctionError" do
       expect (&subject/0) |> to(raise_exception UndefinedFunctionError)
@@ -42,7 +42,7 @@ defmodule Spex.Rule.ModuleSpec do
   end
 
   describe "a raising module rule" do
-    subject do: Spex.evaluate(InvalidRule, :anything)
+    subject do: evaluate(InvalidRule, :anything)
 
     it "should raise an UndefinedFunctionError" do
       expect (&subject/0) |> to(raise_exception UndefinedFunctionError)
@@ -56,7 +56,7 @@ defmodule Spex.Rule.ModuleSpec do
   end
 
   describe "a raising module rule" do
-    subject do: Spex.evaluate(RaisingRule, :anything)
+    subject do: evaluate(RaisingRule, :anything)
 
     it "should raise an error" do
       expect (&subject/0) |> to(raise_exception())
@@ -68,10 +68,14 @@ defmodule Spex.Rule.ModuleSpec do
   end
 
   describe "a throwing module rule" do
-    subject do: Spex.evaluate(ThrowingRule, :anything)
+    subject do: evaluate(ThrowingRule, :anything)
 
     it "should throw something" do
       expect (&subject/0) |> to(throw_term())
     end
+  end
+
+  defp evaluate(rule, value) do
+    Spex.Rule.Evaluable.evaluate(rule, value)
   end
 end

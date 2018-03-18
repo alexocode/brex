@@ -17,13 +17,6 @@ defmodule Spex do
   @type result :: Types.result()
   @type value :: Types.value()
 
-  @spec evaluate(one_or_many_rules(), value()) :: evaluation()
-  def evaluate(rules, value) do
-    rules
-    |> wrap()
-    |> Rule.evaluate(value)
-  end
-
   @spec result(one_or_many_rules(), value()) :: result()
   def result(rules, value) do
     rules

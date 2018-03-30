@@ -3,7 +3,7 @@ defmodule Shared.EvaluateSpec do
 
   import Spex.Assertions.Rule
 
-  let_overridable rule_type: Spex.Rule
+  let_overridable rule_type: :any
   let_overridable :rule
   let_overridable [:valid_values, :invalid_values]
 

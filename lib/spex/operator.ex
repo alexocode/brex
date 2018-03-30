@@ -10,7 +10,7 @@ defmodule Spex.Operator do
   # A struct implementing this behaviour
   @type t :: struct()
 
-  @type clause :: Specifiation.Types.rule()
+  @type clause :: Spex.Types.rule()
   @type clauses :: list(clause())
 
   @callback new(clauses()) :: t()

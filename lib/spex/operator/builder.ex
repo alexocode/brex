@@ -93,7 +93,8 @@ defmodule Spex.Operator.Builder do
         line: env.line,
         description:
           "cannot use Spex.Operator " <>
-            "on module #{inspect(module)} without defining aggregator/1 and clauses/1"
+            "on module #{inspect(module)} without defining aggregator/1 and clauses/1. " <>
+            "Take a look at the `Spex.Operator` module documentation for more information."
   end
 
   defp defimpl_nestable(module) do

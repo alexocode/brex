@@ -1,10 +1,59 @@
 defmodule Spex.Operator do
   @moduledoc """
-  Operators to link links with boolean logic.
+  Operators to link rules with boolean logic.
 
   - `all` all given rules have to be valid (`and`)
   - `any` one given rule has to be valid (`or`)
   - `none` no given rule has to be valid (`not`)
+
+  # Custom Operators
+
+  **TL;DR**
+
+  1. `use Spex.Operator`
+  2. define a struct with a `clauses` key (`defstruct [:clauses]`)
+  3. define an `aggregator/1` function and return the aggregating function
+
+  There are various `use` options to control this behaviour and to make your
+  life easier.
+
+  ## Options
+  ### `aggregator`
+
+  This controls the aggregator definition, it can receive:
+
+  - a function reference: `&Enum.all?/1`
+  - an anonymous function: `&Enum.all(&1)` or `fn v -> Enum.all(v) end`
+  - an atom, identifying a function in this module: `:my_aggregator`
+  - a tuple, identifying a function in a module: `{MyModule, :my_aggregator}`
+
+  ### `clauses`
+
+  Allows to override the expected default key (`clauses`) for contained
+  "sub-rules".
+
+  # How does this magic work?
+
+  Spex operators are based on the `Spex.Operator.Aggregatable` protocol. When
+  calling `use Spex.Operator` Spex tries to define a number of functions for you
+  which it then uses to implement the protocol. The protocol calls then simply
+  delegate to the functions in your custom operator module.
+
+  Furthermore it defines an `evaluate/2` function which is necessary to actually
+  use this operator as a Spex rule. This might change in the future, to make
+  implementing the `Aggregatable` protocol sufficient for defining custom operators.
+
+  To do all of this it calls the `Spex.Operator.Builder.build_from_use/1`
+  function, which does a number of things.
+
+  1. it defines an `aggregator/1` function, if an `aggregator` option has been given
+  2. it defines a `clauses/1` function, which extracts the clauses from the struct
+
+  After that it tries to define the implementation of the `Aggregatable`
+  protocol, which simply delegates it's calls to the using module.
+
+  Due to that it checks if the necessary functions (`aggregator/1` and
+  `clauses/1`) exist. In case they don't exist, a `CompileError` is being raised.
   """
 
   # A struct implementing this behaviour

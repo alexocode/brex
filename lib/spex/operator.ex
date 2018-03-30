@@ -48,14 +48,15 @@ defmodule Spex.Operator do
       unquote(link)([arg1, arg2])
     end
 
-    @spec operator?(t()) :: boolean()
     def operator?(%{__struct__: unquote(module)}), do: true
 
     def type_for(operator: unquote(link)), do: unquote(module)
   end
 
+  @spec operator?(t()) :: boolean()
   def operator?(_), do: false
 
+  @spec type_for(operator: atom()) :: nil | module()
   def type_for(_), do: nil
 
   @doc """

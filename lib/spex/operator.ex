@@ -35,7 +35,7 @@ defmodule Spex.Operator do
     none: Spex.Operator.None
   ]
 
-  def operators, do: unquote(Keyword.keys(operators))
+  def links, do: unquote(Keyword.keys(operators))
 
   for {link, module} <- operators do
     @spec unquote(link)(clauses()) :: t()
@@ -50,9 +50,13 @@ defmodule Spex.Operator do
 
     @spec operator?(t()) :: boolean()
     def operator?(%{__struct__: unquote(module)}), do: true
+
+    def type_for(operator: unquote(link)), do: unquote(module)
   end
 
   def operator?(_), do: false
+
+  def type_for(_), do: nil
 
   @doc """
   Returns the rules contained in the Operator. Raises a `Protocol.UndefinedError`

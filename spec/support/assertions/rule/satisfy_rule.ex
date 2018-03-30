@@ -2,8 +2,10 @@ defmodule Spex.Assertions.Rule.SatisfyRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
-  defp match(value, {rule, nil}) do
-    match(value, {rule, Spex.Rule})
+  defp match(value, {rule, :any}) do
+    %{evaluation: result} = Spex.result(rule, value)
+
+    {Spex.Result.passed?(result), result}
   end
 
   defp match(value, {rule, type}) do

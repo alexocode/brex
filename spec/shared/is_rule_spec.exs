@@ -3,7 +3,7 @@ defmodule Shared.IsRuleSpec do
 
   import Spex.Assertions.Rule
 
-  let_overridable rule_type: Spex.Rule
+  let_overridable rule_type: :any
   let_overridable [:valid_rules, :invalid_rules]
 
   describe ".is_rule_for_type?" do

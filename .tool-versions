@@ -1,1 +1,2 @@
-elixir 1.6.0
+elixir 1.6.3-otp-20
+erlang 20.1

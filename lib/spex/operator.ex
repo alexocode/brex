@@ -63,10 +63,6 @@ defmodule Spex.Operator do
 
   @type clauses :: list(Types.rule())
 
-  @callback new(clauses()) :: t()
-  @callback aggregator(t()) :: (list(boolean()) -> boolean())
-  @callback clauses(t()) :: clauses()
-
   defprotocol Aggregatable do
     @spec aggregator(t()) :: (list(boolean()) -> boolean())
     def aggregator(rule)

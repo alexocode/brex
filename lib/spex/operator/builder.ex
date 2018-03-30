@@ -7,7 +7,6 @@ defmodule Spex.Operator.Builder do
 
     quote do
       @after_compile unquote(__MODULE__)
-      @behaviour Spex.Operator
 
       use Spex.Rule.Struct
 

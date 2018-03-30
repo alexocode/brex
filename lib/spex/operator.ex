@@ -35,6 +35,8 @@ defmodule Spex.Operator do
     none: Spex.Operator.None
   ]
 
+  def operators, do: unquote(Keyword.keys(operators))
+
   for {link, module} <- operators do
     @spec unquote(link)(clauses()) :: t()
     def unquote(link)(clauses) do

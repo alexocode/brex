@@ -1,4 +1,6 @@
 defmodule Spex.Operator.Builder do
+  @moduledoc false
+
   def build_from_use(opts) do
     aggregator = Keyword.get(opts, :aggregator)
     clauses = Keyword.get(opts, :clauses, :clauses)

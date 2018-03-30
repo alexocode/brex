@@ -11,11 +11,11 @@ defmodule Spex.Result do
   @type value :: Types.value()
 
   @type t :: %__MODULE__{
-          rule: rule(),
           evaluation: evaluation(),
+          rule: rule(),
           value: value()
         }
-  defstruct [:rule, :evaluation, :value]
+  defstruct [:evaluation, :rule, :value]
 
   def passed?(%__MODULE__{evaluation: result}), do: passed?(result)
 

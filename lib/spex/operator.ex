@@ -56,21 +56,22 @@ defmodule Spex.Operator do
   `clauses/1`) exist. In case they don't exist, a `CompileError` is being raised.
   """
 
+  alias Spex.Types
+
   # A struct implementing this behaviour
   @type t :: struct()
 
-  @type clause :: Spex.Types.rule()
-  @type clauses :: list(clause())
+  @type clauses :: list(Types.rule())
 
   @callback new(clauses()) :: t()
   @callback aggregator(t()) :: (list(boolean()) -> boolean())
-  @callback clauses(t()) :: list(Spex.Types.rule())
+  @callback clauses(t()) :: clauses()
 
   defprotocol Aggregatable do
     @spec aggregator(t()) :: (list(boolean()) -> boolean())
     def aggregator(rule)
 
-    @spec clauses(t()) :: list(t())
+    @spec clauses(t()) :: list(Spex.Types.rule())
     def clauses(rule)
   end
 
@@ -92,7 +93,7 @@ defmodule Spex.Operator do
       unquote(module).new(clauses)
     end
 
-    @spec unquote(link)(clause(), clause()) :: t()
+    @spec unquote(link)(Types.rule(), Types.rule()) :: t()
     def unquote(link)(arg1, arg2) do
       unquote(link)([arg1, arg2])
     end

@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.org/Zeeker/spex.svg?branch=master)](https://travis-ci.org/Zeeker/spex)
 [![Coverage Status](https://coveralls.io/repos/github/Zeeker/spex/badge.svg?branch=master)](https://coveralls.io/github/Zeeker/spex?branch=master)
 
+*A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern) implementation in Elixir.*
+
 Using `spex` you can easily
 
 - __define__

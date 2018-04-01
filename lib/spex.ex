@@ -106,7 +106,7 @@ defmodule Spex do
   @spec satisfies?(one_or_many_rules(), value()) :: boolean()
   def satisfies?(rules, value) do
     rules
-    |> result(value)
+    |> evaluate(value)
     |> passed?()
   end
 
@@ -117,7 +117,7 @@ defmodule Spex do
   # Examples
 
       iex> rule = &(length(&1) > 0)
-      iex> result = Spex.result(rule, [])
+      iex> result = Spex.evaluate(rule, [])
       iex> match? %Spex.Result{
       ...>   evaluation: false,
       ...>   rule: _,
@@ -126,7 +126,7 @@ defmodule Spex do
       true
 
       iex> rules = [&is_list/1, &Keyword.keyword?/1]
-      iex> result = Spex.result(rules, [])
+      iex> result = Spex.evaluate(rules, [])
       iex> match? %Spex.Result{
       ...>   evaluation: {:ok, [%Spex.Result{evaluation: true}, %Spex.Result{}]},
       ...>   rule: %Spex.Operator.All{clauses: _},
@@ -134,11 +134,11 @@ defmodule Spex do
       ...> }, result
       true
   """
-  @spec result(one_or_many_rules(), value()) :: result()
-  def result(rules, value) do
+  @spec evaluate(one_or_many_rules(), value()) :: result()
+  def evaluate(rules, value) do
     rules
     |> wrap()
-    |> Rule.result(value)
+    |> Rule.evaluate(value)
   end
 
   defp wrap(rules) when is_list(rules) do

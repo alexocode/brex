@@ -26,7 +26,7 @@ defmodule Spex.Operator.Builder do
         results =
           rule
           |> clauses()
-          |> Enum.map(&Spex.result(&1, value))
+          |> Enum.map(&Spex.evaluate(&1, value))
 
         if aggregate(rule, results) do
           {:ok, results}

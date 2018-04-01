@@ -48,8 +48,8 @@ defmodule Spex.Rule do
   Calls `evaluate/2` with the given rule and value and wraps it in a
   `Spex.Result` struct.
   """
-  @spec result(t(), Types.value()) :: Types.result()
-  def result(rule, value) do
+  @spec evaluate(t(), Types.value()) :: Types.result()
+  def evaluate(rule, value) do
     %Spex.Result{
       evaluation: Evaluable.evaluate(rule, value),
       rule: rule,

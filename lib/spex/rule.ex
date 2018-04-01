@@ -65,7 +65,7 @@ defmodule Spex.Rule do
       iex> Spex.Rule.number_of_clauses(rules)
       1
 
-      iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
+      iex> rules = [fn _ -> true end, Spex.any(fn _ -> false end, fn _ -> true end)]
       iex> Spex.Rule.number_of_clauses(rules)
       3
   """

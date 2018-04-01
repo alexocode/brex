@@ -111,7 +111,7 @@ defmodule Spex.Operator do
 
   ## Examples
 
-      iex> Spex.Operator.clauses!(Spex.Operator.all([&is_list/1, &is_map/1]))
+      iex> Spex.Operator.clauses!(Spex.all([&is_list/1, &is_map/1]))
       [&is_list/1, &is_map/1]
   """
   @spec clauses!(t()) :: clauses()
@@ -123,7 +123,7 @@ defmodule Spex.Operator do
 
   ## Examples
 
-      iex> Spex.Operator.clauses(Spex.Operator.all([&is_list/1, &is_map/1]))
+      iex> Spex.Operator.clauses(Spex.all([&is_list/1, &is_map/1]))
       {:ok, [&is_list/1, &is_map/1]}
 
       iex> Spex.Operator.clauses(&is_list/1)

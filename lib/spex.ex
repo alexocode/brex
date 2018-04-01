@@ -74,7 +74,7 @@ defmodule Spex do
   end
 
   defp wrap(rules) when is_list(rules) do
-    Spex.Operator.all(rules)
+    Spex.all(rules)
   end
 
   defp wrap(rule) do

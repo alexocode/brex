@@ -89,6 +89,8 @@ defmodule Spex do
   Evaluates a rule for a given value and returns a boolean whether or not it
   satisfies the rule. Equivalent to a `result/2` followed by a `passed?/1` call.
 
+  Allows you to pass a list of rules which get linked calling `all/1`.
+
   # Examples
 
       iex> Spex.satisfies? &is_list/1, []
@@ -113,6 +115,8 @@ defmodule Spex do
   @doc """
   Evaluates a given rule for a given value. Returns a `Spex.Result` struct which
   contains the evaluated rules, the value and - of course - the evaluation result.
+
+  Allows you to pass a list of rules which get linked calling `all/1`.
 
   # Examples
 

@@ -1,6 +1,6 @@
 defmodule Spex.Result do
   @moduledoc """
-  Represents a result of a rule evaluation. It contains
+  Represents a result of a rule evaluation. It contains ...
 
   - `evaluation`: the result of the `evaluate` call for the
   - `rule`: the evaluated rule
@@ -12,7 +12,9 @@ defmodule Spex.Result do
   """
   alias Spex.Types
 
-  @type evaluation :: boolean() | :ok | {:ok, any()} | {:error, any()}
+  @type evaluation :: success() | failure()
+  @type success :: true | :ok | {:ok, any()}
+  @type failure :: false | :error | {:error, any()}
   @type rule :: Types.rule()
   @type value :: Types.value()
 
@@ -23,6 +25,7 @@ defmodule Spex.Result do
         }
   defstruct [:evaluation, :rule, :value]
 
+  @spec passed?(result :: t() | evaluation()) :: boolean()
   def passed?(%__MODULE__{evaluation: result}), do: passed?(result)
 
   def passed?(boolean) when is_boolean(boolean), do: boolean

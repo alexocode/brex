@@ -1,10 +1,19 @@
 defmodule Spex.Rule do
-  # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
-  # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
+  @moduledoc """
+  The behaviour for module based rules which requires an `evaluate/1` function.
 
+  Furthermore contains the `Spex.Rule.Evaluable` protocol which represents the
+  basic building block of `Spex`. Currently supported rule types are:
+
+  - `atom` or rather Modules
+  - `function` with arity 1
+  - `struct`s, take a look at `Spex.Rule.Struct` for details
+  """
   alias Spex.Types
 
   @type t :: any()
+
+  @callback evaluate(value :: Types.value()) :: Types.evaluation()
 
   defprotocol Evaluable do
     @moduledoc """

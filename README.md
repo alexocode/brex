@@ -25,37 +25,47 @@ Whatever your use-case, `Spex` has you covered.
 The lowest building stone of `Spex` is a __rule__. A rule can
 have many shapes, for example this is a rule:
 
-    &is_list/1
+```elixir
+&is_list/1
+```
 
 This is a rule too:
 
-    Spex.all([&is_list/1, &(length(&1) > 0)])
+```elixir
+Spex.all([&is_list/1, &(length(&1) > 0)])
+```
 
 Or this:
 
-    defmodule MyRule do
-      def evaluate(:foo), do: true
-      def evaluate(:bar), do: false
-    end
+```elixir
+defmodule MyRule do
+  def evaluate(:foo), do: true
+  def evaluate(:bar), do: false
+end
+```
 
 Also this:
 
-    defmodule MyStruct do
-      use Spex.Rule.Struct
+```elixir
+defmodule MyStruct do
+  use Spex.Rule.Struct
 
-      defstruct [:foo]
+  defstruct [:foo]
 
-      def evaluate(%{foo: foo}, value) do
-        foo == value
-      end
-    end
+  def evaluate(%{foo: foo}, value) do
+    foo == value
+  end
+end
+```
 
 > Enough talk about defining rules, how can I __evaluate__ them?
 
 Well great that you ask, that's simple too!
 
-    iex> Spex.satisfies? MyRule, :foo
-    true
+```elixir
+iex> Spex.satisfies? MyRule, :foo
+true
+```
 
 As you can see, `Spex` is flexible and easy to use. All of this is based on
 the `Spex.Rule.Evaluable` protocol, if you're really interested, take a look

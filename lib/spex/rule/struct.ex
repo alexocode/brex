@@ -1,19 +1,20 @@
 defmodule Spex.Rule.Struct do
   @moduledoc """
-  This module contains the behaviour to specify a Spex rule with some
-  state by making use of structs.
+  Easily define your own struct based rules by *using* `#{inspect(__MODULE__)}`.
 
-  # TODO: Change this!
+  It takes care of implementing `Spex.Rule.Evaluable` for you, as long as you
+  define an `evaluate/2` function receiving your struct and the value to
+  evaluate.
 
-  You can __use__ this module to define your own struct based rules:
+  # Example
 
-      defmodule MyRule do
+      defmodule EqualRule do
         use #{inspect(__MODULE__)}
 
-        defstruct [:my_field]
+        defstruct [:expected]
 
-        def evaluate(%__MODULE__{my_field: foo}, value) do
-          foo != value
+        def evaluate(%__MODULE__{expected: expected}, actual) do
+          expected == actual
         end
       end
   """

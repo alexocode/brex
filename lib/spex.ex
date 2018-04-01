@@ -1,12 +1,80 @@
 defmodule Spex do
   @moduledoc """
-  The main module. Provides shortcut functions to evaluate rules, reduce the
-  results to a boolean and to check if some value satisfy some rules.
+  *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern)
+  implementation in Elixir.*
 
-  For further information take a look at the following modules:
-  - `Spex.Rule`
-  - `Spex.Result`
-  - `Spex.Operator`
+  Using `spex` you can easily
+
+  - __define__
+  - __compose__ and
+  - __evaluate__
+
+  rules at __runtime__.
+
+  # Basics
+
+  The lowest building stone of `Spex` is a __rule__. A rule can
+  have many shapes, for example this is a rule:
+
+      &is_list/1
+
+  This is a rule too:
+
+      Spex.all([&is_list/1, &(length(&1) > 0)])
+
+  Or this:
+
+      defmodule MyRule do
+        def evaluate(:foo), do: true
+        def evaluate(:bar), do: false
+      end
+
+  Also this:
+
+      defmodule MyStruct do
+        use Spex.Rule.Struct
+
+        defstruct [:foo]
+
+        def evaluate(%{foo: foo}, value) do
+          foo == value
+        end
+      end
+
+  > Enough talk about defining rules, how can I __evaluate__ them?
+
+  Well great that you ask, that's simple too!
+
+      Spex.satisfies? MyRule, :foo
+      true
+
+  As you can see, `Spex` is flexible and easy to use. All of this is based on
+  the `Spex.Rule.Evaluable` protocol, if you're really interested, take a look
+  at `Spex.Rule` which talks about the possible rule types a little bit more.
+
+  # Operators
+
+  Also, as you might have noticed, I used an `all/1` function in the examples
+  above. This is the __compose__ part of `Spex`: it allows you to link rules
+  using boolean logic.
+
+  It currently supports:
+
+  - `all/1`
+  - `any/1`
+  - `none/1`
+
+  I think the names speak for themself.
+
+  # More ...
+
+  Apart from that, this module mainly serves as a utility belt for dealing with
+  rules. It offers some functions to evaluate some rules, or to check if a given
+  value satisfies some rules.
+
+  But for this I would suggest to simply take a look at the functions in detail.
+
+  I hope you enjoy using `Spex`!
   """
 
   alias Spex.{Operator, Rule, Types}

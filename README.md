@@ -58,7 +58,7 @@ defmodule MyStruct do
 end
 ```
 
-> Enough talk about defining rules, how can I __evaluate__ them?
+### *Enough talk about defining rules, how can I __evaluate__ them?*
 
 Well great that you ask, that's simple too!
 

@@ -44,7 +44,7 @@ defmodule Spex.Rule do
       iex> Spex.Rule.type(SomeModuleRule)
       Spex.Rule.Evaluable.Atom
 
-      iex> Spex.Rule.type(Spex.Operator.All.new([]))
+      iex> Spex.Rule.type(Spex.all([]))
       Spex.Rule.Evaluable.Spex.Operator.All
 
       iex> Spex.Rule.type("something")

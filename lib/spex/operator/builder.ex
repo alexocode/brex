@@ -77,7 +77,7 @@ defmodule Spex.Operator.Builder do
 
   defp build(:new, key) when is_atom(key) do
     quote do
-      def new(clauses), do: struct(__MODULE__, %{unquote(key) => clauses})
+      def new(operator, clauses), do: struct(operator, %{unquote(key) => clauses})
     end
   end
 
@@ -97,10 +97,17 @@ defmodule Spex.Operator.Builder do
   end
 
   defp defimpl_nestable(module) do
-    if function_exported?(module, :aggregator, 1) and function_exported?(module, :clauses, 1) do
+    expected_functions = [
+      [:aggregator, 1],
+      [:clauses, 1],
+      [:new, 2]
+    ]
+
+    if Enum.all?(expected_functions, &apply(Kernel, :function_exported?, [module | &1])) do
       defimpl Spex.Operator.Aggregatable, for: module do
-        defdelegate aggregator(rule), to: module
-        defdelegate clauses(rule), to: module
+        defdelegate aggregator(operator), to: module
+        defdelegate clauses(operator), to: module
+        defdelegate new(operator, clauses), to: module
       end
     end
   end

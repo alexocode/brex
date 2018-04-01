@@ -130,7 +130,19 @@ defmodule Spex do
   @spec number_of_clauses(Types.rule()) :: non_neg_integer()
   defdelegate number_of_clauses(rule), to: Rule
 
-  for operator <- Operator.links() do
+  for operator <- Operator.default_operators() do
+    short_name =
+      operator
+      |> Macro.underscore()
+      |> Path.basename()
+      |> String.to_atom()
+
+    @doc "Shortcut for `Spex.#{operator}([rule1, rule2])`."
+    @spec unquote(short_name)(rule1 :: Types.rule(), rule2 :: Types.rule()) :: Operator.t()
+    def unquote(short_name)(rule1, rule2) do
+      unquote(short_name)([rule1, rule2])
+    end
+
     @doc """
     Links the given rules in a boolean fashion, similar to the `Enum` functions.
 
@@ -140,20 +152,19 @@ defmodule Spex do
 
     # Examples
 
-        iex> Spex.#{operator} &is_list/1, &is_map/1
-        %#{inspect(Operator.type_for(operator: operator))}{
+        iex> Spex.#{short_name} &is_list/1, &is_map/1
+        %#{inspect(operator)}{
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1]
         }
 
-        iex> Spex.#{operator} [&is_list/1, &is_map/1, &is_binary/1]
-        %#{inspect(Operator.type_for(operator: operator))}{
+        iex> Spex.#{short_name} [&is_list/1, &is_map/1, &is_binary/1]
+        %#{inspect(operator)}{
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1, &:erlang.is_binary/1]
         }
     """
-    @spec unquote(operator)(list(Types.rule())) :: Operator.t()
-    defdelegate unquote(operator)(rules), to: Operator
-    @doc "Shortcut for `Spex.#{operator}([rule1, rule2])`."
-    @spec unquote(operator)(Types.rule(), Types.rule()) :: Operator.t()
-    defdelegate unquote(operator)(rule1, rule2), to: Operator
+    @spec unquote(short_name)(list(Types.rule())) :: Operator.t()
+    def unquote(short_name)(rules) do
+      Operator.new(unquote(operator), rules)
+    end
   end
 end

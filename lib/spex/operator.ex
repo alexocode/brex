@@ -1,10 +1,7 @@
 defmodule Spex.Operator do
   @moduledoc """
-  Operators to link rules with boolean logic.
-
-  - `all` all given rules have to be valid (`and`)
-  - `any` one given rule has to be valid (`or`)
-  - `none` no given rule has to be valid (`not`)
+  Contains the `Aggregatable` root protocol for operators, provides some helpers
+  for Operators and is `use`able to define ...
 
   # Custom Operators
 
@@ -48,6 +45,7 @@ defmodule Spex.Operator do
 
   1. it defines an `aggregator/1` function, if an `aggregator` option has been given
   2. it defines a `clauses/1` function, which extracts the clauses from the struct
+  3. it defines a `new/2` function, which news an operator with some clauses
 
   After that it tries to define the implementation of the `Aggregatable`
   protocol, which simply delegates it's calls to the using module.
@@ -64,46 +62,41 @@ defmodule Spex.Operator do
   @type clauses :: list(Types.rule())
 
   defprotocol Aggregatable do
-    @spec aggregator(t()) :: (list(boolean()) -> boolean())
-    def aggregator(rule)
+    @type clauses :: list(Spex.Types.rule())
 
-    @spec clauses(t()) :: list(Spex.Types.rule())
-    def clauses(rule)
+    @spec aggregator(t()) :: (list(boolean()) -> boolean())
+    def aggregator(aggregatable)
+
+    @spec clauses(t()) :: clauses()
+    def clauses(aggregatable)
+
+    @spec new(t(), clauses()) :: t()
+    def new(aggregatable, clauses)
   end
 
   defmacro __using__(opts) do
     Spex.Operator.Builder.build_from_use(opts)
   end
 
-  operators = [
-    all: Spex.Operator.All,
-    any: Spex.Operator.Any,
-    none: Spex.Operator.None
-  ]
-
-  def links, do: unquote(Keyword.keys(operators))
-
-  for {link, module} <- operators do
-    @spec unquote(link)(clauses()) :: t()
-    def unquote(link)(clauses) do
-      unquote(module).new(clauses)
-    end
-
-    @spec unquote(link)(Types.rule(), Types.rule()) :: t()
-    def unquote(link)(arg1, arg2) do
-      unquote(link)([arg1, arg2])
-    end
-
-    def operator?(%{__struct__: unquote(module)}), do: true
-
-    def type_for(operator: unquote(link)), do: unquote(module)
+  @spec default_operators() :: list(module())
+  def default_operators do
+    [
+      Spex.Operator.All,
+      Spex.Operator.Any,
+      Spex.Operator.None
+    ]
   end
 
-  @spec operator?(t()) :: boolean()
-  def operator?(_), do: false
-
-  @spec type_for(operator: atom()) :: nil | module()
-  def type_for(_), do: nil
+  @doc """
+  Returns a new instance of an operator; not meant to be used directly but is
+  instead used internally when calling the operator shortcut functions on `Spex`.
+  """
+  @spec new(operator :: module(), rules :: clauses()) :: t()
+  def new(operator, rules) do
+    operator
+    |> struct()
+    |> Aggregatable.new(rules)
+  end
 
   @doc """
   Returns the rules contained in the Operator. Raises a `Protocol.UndefinedError`

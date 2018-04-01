@@ -3,6 +3,21 @@ defmodule Spex.OperatorSpec do
 
   doctest Spex.Operator
 
+  describe ".new" do
+    subject do: described_module().new(operator(), rules())
+
+    for operator <- Spex.Operator.default_operators() do
+      context "for #{operator}" do
+        let operator: unquote(operator)
+        let rules: [1, 2, 3]
+
+        it "returns a #{operator} struct" do
+          should(be_struct unquote(operator))
+        end
+      end
+    end
+  end
+
   describe ".clauses!" do
     subject do: described_module().clauses!(operator())
 

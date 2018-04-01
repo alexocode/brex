@@ -5,7 +5,7 @@ defmodule Spex.Operator.AnySpec do
 
   it_behaves_like Shared.EvaluateSpec,
     rule_type: Any,
-    rule: Any.new([&Keyword.keyword?/1, &is_map/1]),
+    rule: Spex.any(&Keyword.keyword?/1, &is_map/1),
     valid_values: [
       [],
       [a: 1, b: 2],

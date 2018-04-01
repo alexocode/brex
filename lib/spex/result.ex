@@ -1,8 +1,14 @@
 defmodule Spex.Result do
   @moduledoc """
-  Represents a result of a rule evaluation.
+  Represents a result of a rule evaluation. It contains
 
-  It contains the rule and the evaluated result which was returned by the rule.
+  - `evaluation`: the result of the `evaluate` call for the
+  - `rule`: the evaluated rule
+  - `value`: the evaluated value
+
+  In addition to that it defines a `passed?/1` function which receives a
+  `Spex.Result` or an `evaluate` return value and determines whether the
+  evaluations was considered successful or not.
   """
   alias Spex.Types
 

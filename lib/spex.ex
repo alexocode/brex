@@ -146,9 +146,9 @@ defmodule Spex do
     @doc """
     Links the given rules in a boolean fashion, similar to the `Enum` functions.
 
-    - `all` rules have to pass (`&&`)
-    - `any` one rule is sufficient to pass (`||`)
-    - `none` of the rules may pass (`!`)
+    - `all` rules have to pass (`and` / `&&`)
+    - `any` one rule is sufficient to pass (`or` / `||`)
+    - `none` of the rules may pass (`not` / `!`)
 
     # Examples
 

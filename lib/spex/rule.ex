@@ -1,6 +1,7 @@
 defmodule Spex.Rule do
   @moduledoc """
   The behaviour for module based rules which requires an `evaluate/1` function.
+  Also offers some helpful functions to deal with all kinds of rules.
 
   Furthermore contains the `Spex.Rule.Evaluable` protocol which represents the
   basic building block of `Spex`. Currently supported rule types are:
@@ -8,6 +9,21 @@ defmodule Spex.Rule do
   - `atom` or rather Modules
   - `function` with arity 1
   - `struct`s, take a look at `Spex.Rule.Struct` for details
+
+  # Example - Module based rule
+
+      defmodule OkRule do
+        @behaviour Spex.Rule
+
+        @impl Spex.Rule
+        def evaluate(:ok), do: true
+
+        @impl Spex.Rule
+        def evaluate({:ok, _}), do: true
+
+        @impl Spex.Rule
+        def evaluate(_), do: false
+      end
   """
   alias Spex.Types
 
@@ -29,7 +45,7 @@ defmodule Spex.Rule do
   end
 
   @doc """
-  Calls `evaluate/2` with the given rule and value and wraps it into a
+  Calls `evaluate/2` with the given rule and value and wraps it in a
   `Spex.Result` struct.
   """
   @spec result(t(), Types.value()) :: Types.result()

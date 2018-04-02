@@ -53,83 +53,36 @@ defmodule Brex.Operator do
   Due to that it checks if the necessary functions (`aggregator/1` and
   `clauses/1`) exist. In case they don't exist, a `CompileError` is being raised.
   """
+  use Brex.Rule.Struct
 
-  alias Brex.Types
+  @type aggregator :: (list(boolean()) -> boolean())
+  @type clauses :: list(Brex.Types.rule())
+  @type t :: %__MODULE__{
+          aggregator: aggregator(),
+          clauses: clauses()
+        }
+  defstruct [:aggregator, :clauses]
 
-  # A struct implementing this behaviour
-  @type t :: struct()
+  def evaluate(%__MODULE__{} = rule, value) do
+    results = evaluate_clauses(rule, value)
 
-  @type clauses :: list(Types.rule())
-
-  defprotocol Aggregatable do
-    @type clauses :: list(Brex.Types.rule())
-
-    @spec aggregator(t()) :: (list(boolean()) -> boolean())
-    def aggregator(aggregatable)
-
-    @spec clauses(t()) :: clauses()
-    def clauses(aggregatable)
-
-    @spec new(t(), clauses()) :: t()
-    def new(aggregatable, clauses)
-  end
-
-  defmacro __using__(opts) do
-    Brex.Operator.Builder.build_from_use(opts)
-  end
-
-  @spec default_operators() :: list(module())
-  def default_operators do
-    [
-      Brex.Operator.All,
-      Brex.Operator.Any,
-      Brex.Operator.None
-    ]
-  end
-
-  @doc """
-  Returns a new instance of an operator; not meant to be used directly but is
-  instead used internally when calling the operator shortcut functions on `Brex`.
-  """
-  @spec new(operator :: module(), rules :: clauses()) :: t()
-  def new(operator, rules) do
-    operator
-    |> struct()
-    |> Aggregatable.new(rules)
-  end
-
-  @doc """
-  Returns the rules contained in the Operator. Raises a `Protocol.UndefinedError`
-  if the given value does not implement `Brex.Operator.Aggregatable`.
-
-  ## Examples
-
-      iex> Brex.Operator.clauses!(Brex.all([&is_list/1, &is_map/1]))
-      [&is_list/1, &is_map/1]
-  """
-  @spec clauses!(t()) :: clauses()
-  defdelegate clauses!(operator), to: Aggregatable, as: :clauses
-
-  @doc """
-  Returns `{:ok, list(t())}` if the rule implements Brex.Operator.Aggregatable
-  and `:error` otherwise.
-
-  ## Examples
-
-      iex> Brex.Operator.clauses(Brex.all([&is_list/1, &is_map/1]))
-      {:ok, [&is_list/1, &is_map/1]}
-
-      iex> Brex.Operator.clauses(&is_list/1)
-      :error
-
-      iex> Brex.Operator.clauses("foo_bar")
-      :error
-  """
-  @spec clauses(t()) :: {:ok, clauses()} | :error
-  def clauses(operator) do
-    case Aggregatable.impl_for(operator) do
-      nil -> :error
-      impl -> {:ok, impl.clauses(operator)}
+    if aggregate(rule, results) do
+      {:ok, results}
+    else
+      {:error, results}
     end
   end
+
+  defp evaluate_clauses(%{clauses: clauses}, value) do
+    Enum.map(clauses, &Brex.evaluate(&1, value))
+  end
+
+  defp aggregate(%{aggregator: aggregator}, results) do
+    results
+    |> Enum.map(&Brex.passed?/1)
+    |> aggregator.()
+  end
+
+  def clauses(%__MODULE__{clauses: clauses}), do: {:ok, clauses}
+  def clauses(_), do: :error
 end

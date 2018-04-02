@@ -90,8 +90,7 @@ You can define your own operators, if you're interested then take a look at the 
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `brex` to your list of dependencies in `mix.exs`:
+Simply add `brex` to your list of dependencies in your `mix.exs`:
 
 ```elixir
 def deps do
@@ -101,9 +100,9 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/brex](https://hexdocs.pm/brex).
+# Configuration
+
+Right now, there is no need for any kind of configuration in `Brex`. In case you see some need for it, please open an issue.
 
 [evaluable]: https://github.com/Zeeker/brex/blob/master/lib/brex/rule.ex#L9-L20
 [operator]: https://github.com/Zeeker/brex/blob/master/lib/brex/operator.ex

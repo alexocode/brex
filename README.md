@@ -10,15 +10,15 @@ Using `spex` you can easily
 - __compose__ and
 - __evaluate__
 
-rules at __runtime__.
+business rules to dynamically drive the flow of your application.
 
 ## Motiviation
 
-`Spex` was built to allow you to evaluate data based on business rules which change over time and need to be configured in one fashion or another.
+`Spex` was built to allow you to define and compose rules to evaluate them later. This enables you to build your rules from some kind of configuration, be it a database, a CSV or JSON or anything else.
 
 Maybe you want to allow your customer to create dynamic rules for sending out emails or push notifications? Or you want to decide on the type of event to trigger based on imcoming data? Or you think bigger and want to create some kind of flow chart interface?
 
-Whatever your use-case, `Spex` has you covered.
+Whatever your particular use-case, `Spex` has you covered when it comes to composition of rules.
 
 ## Basics
 
@@ -39,6 +39,9 @@ Or this:
 
 ```elixir
 defmodule MyRule do
+  @behaviour Spex.Rule
+
+  @impl true
   def evaluate(:foo), do: true
   def evaluate(:bar), do: false
 end
@@ -58,7 +61,7 @@ defmodule MyStruct do
 end
 ```
 
-### *Enough talk about defining rules, how can I __evaluate__ them?*
+### Enough talk about defining rules, how can I _evaluate_ them?
 
 Well great that you ask, that's simple too!
 

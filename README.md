@@ -22,8 +22,7 @@ Whatever your particular use-case, `Spex` has you covered when it comes to compo
 
 ## Basics
 
-The lowest building stone of `Spex` is a __rule__. A rule can
-have many shapes, for example this is a rule:
+The lowest building stone of `Spex` is a __rule__. A rule can have many shapes, for example this is a rule:
 
 ```elixir
 &is_list/1
@@ -70,9 +69,7 @@ iex> Spex.satisfies? MyRule, :foo
 true
 ```
 
-As you can see, `Spex` is flexible and easy to use. All of this is based on
-the `Spex.Rule.Evaluable` protocol, if you're really interested, take a look
-at `Spex.Rule` which talks about the possible rule types a little bit more.
+As you can see, `Spex` is flexible and easy to use. All of this is based on the [`Spex.Rule.Evaluable`][evaluable] protocol, if you're really interested, take a look at [`Spex.Rule`][rule] which talks about the possible rule types a little bit more.
 
 # Operators
 
@@ -82,11 +79,13 @@ using boolean logic.
 
 It currently supports:
 
-- `all/1`
-- `any/1`
-- `none/1`
+- `all`
+- `any`
+- `none`
 
 I think the names speak for themself.
+
+You can define your own operators, if you're interested then take a look at the [`Spex.Operator`][operator] module.
 
 ## Installation
 
@@ -104,3 +103,7 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/spex](https://hexdocs.pm/spex).
+
+[evaluable]: https://github.com/Zeeker/spex/blob/master/lib/spex/rule.ex#L9-L20
+[operator]: https://github.com/Zeeker/spex/blob/master/lib/spex/operator.ex
+[rule]: https://github.com/Zeeker/spex/blob/master/lib/spex/rule.ex

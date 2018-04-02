@@ -1,5 +1,5 @@
 defmodule Support.Rules.EqualsRule do
-  use Spex.Rule.Struct
+  use Brex.Rule.Struct
 
   defstruct [:value]
 

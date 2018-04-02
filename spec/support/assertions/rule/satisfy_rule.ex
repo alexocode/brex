@@ -1,17 +1,17 @@
-defmodule Spex.Assertions.Rule.SatisfyRule do
+defmodule Brex.Assertions.Rule.SatisfyRule do
   @moduledoc false
   use ESpec.Assertions.Interface
 
   defp match(value, {rule, :any}) do
-    %{evaluation: result} = Spex.evaluate(rule, value)
+    %{evaluation: result} = Brex.evaluate(rule, value)
 
-    {Spex.Result.passed?(result), result}
+    {Brex.Result.passed?(result), result}
   end
 
   defp match(value, {rule, type}) do
     result = type.evaluate(rule, value)
 
-    {Spex.Result.passed?(result), result}
+    {Brex.Result.passed?(result), result}
   end
 
   defp success_message(value, {rule, type}, _, positive) do

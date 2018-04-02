@@ -1,7 +1,7 @@
 defmodule Shared.EvaluateSpec do
   use ESpec, async: true, shared: true
 
-  import Spex.Assertions.Rule
+  import Brex.Assertions.Rule
 
   let_overridable rule_type: :any
   let_overridable :rule

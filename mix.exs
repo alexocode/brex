@@ -1,9 +1,9 @@
-defmodule Spex.Mixfile do
+defmodule Brex.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :spex,
+      app: :brex,
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: [
@@ -19,9 +19,9 @@ defmodule Spex.Mixfile do
       aliases: aliases(),
 
       # Docs
-      name: "Spex",
-      source_url: "https://github.com/Zeeker/spex",
-      homepage_url: "https://github.com/Zeeker/spex",
+      name: "Brex",
+      source_url: "https://github.com/Zeeker/brex",
+      homepage_url: "https://github.com/Zeeker/brex",
 
       # Hex
       description: description(),
@@ -67,7 +67,7 @@ defmodule Spex.Mixfile do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/Zeeker/spex"
+        "GitHub" => "https://github.com/Zeeker/brex"
       },
       maintainers: ["Sascha Wolf <swolf.dev@gmail.com>"]
     ]

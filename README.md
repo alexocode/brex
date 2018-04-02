@@ -1,10 +1,10 @@
-# Spex
-[![Build Status](https://travis-ci.org/Zeeker/spex.svg?branch=master)](https://travis-ci.org/Zeeker/spex)
-[![Coverage Status](https://coveralls.io/repos/github/Zeeker/spex/badge.svg?branch=master)](https://coveralls.io/github/Zeeker/spex?branch=master)
+# Brex
+[![Build Status](https://travis-ci.org/Zeeker/brex.svg?branch=master)](https://travis-ci.org/Zeeker/brex)
+[![Coverage Status](https://coveralls.io/repos/github/Zeeker/brex/badge.svg?branch=master)](https://coveralls.io/github/Zeeker/brex?branch=master)
 
 *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern) implementation in Elixir.*
 
-Using `spex` you can easily
+Using `brex` you can easily
 
 - __define__
 - __compose__ and
@@ -14,15 +14,15 @@ business rules to dynamically drive the flow of your application.
 
 ## Motiviation
 
-`Spex` was built to allow you to define and compose rules to evaluate them later. This enables you to build your rules from some kind of configuration, be it a database, a CSV or JSON or anything else.
+`Brex` was built to allow you to define and compose rules to evaluate them later. This enables you to build your rules from some kind of configuration, be it a database, a CSV or JSON or anything else.
 
 Maybe you want to allow your customer to create dynamic rules for sending out emails or push notifications? Or you want to decide on the type of event to trigger based on imcoming data? Or you think bigger and want to create some kind of flow chart interface?
 
-Whatever your particular use-case, `Spex` has you covered when it comes to composition of rules.
+Whatever your particular use-case, `Brex` has you covered when it comes to composition of rules.
 
 ## Basics
 
-The lowest building stone of `Spex` is a __rule__. A rule can have many shapes, for example this is a rule:
+The lowest building stone of `Brex` is a __rule__. A rule can have many shapes, for example this is a rule:
 
 ```elixir
 &is_list/1
@@ -31,14 +31,14 @@ The lowest building stone of `Spex` is a __rule__. A rule can have many shapes, 
 This is a rule too:
 
 ```elixir
-Spex.all([&is_list/1, &(length(&1) > 0)])
+Brex.all([&is_list/1, &(length(&1) > 0)])
 ```
 
 Or this:
 
 ```elixir
 defmodule MyRule do
-  @behaviour Spex.Rule
+  @behaviour Brex.Rule
 
   @impl true
   def evaluate(:foo), do: true
@@ -50,7 +50,7 @@ Also this:
 
 ```elixir
 defmodule MyStruct do
-  use Spex.Rule.Struct
+  use Brex.Rule.Struct
 
   defstruct [:foo]
 
@@ -65,16 +65,16 @@ end
 Well great that you ask, that's simple too!
 
 ```elixir
-iex> Spex.satisfies? MyRule, :foo
+iex> Brex.satisfies? MyRule, :foo
 true
 ```
 
-As you can see, `Spex` is flexible and easy to use. All of this is based on the [`Spex.Rule.Evaluable`][evaluable] protocol, if you're really interested, take a look at [`Spex.Rule`][rule] which talks about the possible rule types a little bit more.
+As you can see, `Brex` is flexible and easy to use. All of this is based on the [`Brex.Rule.Evaluable`][evaluable] protocol, if you're really interested, take a look at [`Brex.Rule`][rule] which talks about the possible rule types a little bit more.
 
 # Operators
 
 Also, as you might have noticed, I used an `all/1` function in the examples
-above. This is the __compose__ part of `Spex`: it allows you to link rules
+above. This is the __compose__ part of `Brex`: it allows you to link rules
 using boolean logic.
 
 It currently supports:
@@ -85,25 +85,25 @@ It currently supports:
 
 I think the names speak for themself.
 
-You can define your own operators, if you're interested then take a look at the [`Spex.Operator`][operator] module.
+You can define your own operators, if you're interested then take a look at the [`Brex.Operator`][operator] module.
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `spex` to your list of dependencies in `mix.exs`:
+by adding `brex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:spex, "~> 0.1.0"}
+    {:brex, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/spex](https://hexdocs.pm/spex).
+be found at [https://hexdocs.pm/brex](https://hexdocs.pm/brex).
 
-[evaluable]: https://github.com/Zeeker/spex/blob/master/lib/spex/rule.ex#L9-L20
-[operator]: https://github.com/Zeeker/spex/blob/master/lib/spex/operator.ex
-[rule]: https://github.com/Zeeker/spex/blob/master/lib/spex/rule.ex
+[evaluable]: https://github.com/Zeeker/brex/blob/master/lib/brex/rule.ex#L9-L20
+[operator]: https://github.com/Zeeker/brex/blob/master/lib/brex/operator.ex
+[rule]: https://github.com/Zeeker/brex/blob/master/lib/brex/rule.ex

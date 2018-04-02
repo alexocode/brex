@@ -1,7 +1,7 @@
-defmodule Spex.Assertions.Rule do
+defmodule Brex.Assertions.Rule do
   @moduledoc false
 
-  alias Spex.Assertions.Rule.{BeRule, SatisfyRule}
+  alias Brex.Assertions.Rule.{BeRule, SatisfyRule}
 
   def be_rule(rule \\ :any), do: {BeRule, rule}
 

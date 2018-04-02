@@ -1,5 +1,5 @@
 defmodule Support.Operators.NoOptionAndBothDefintions do
-  use Spex.Operator
+  use Brex.Operator
 
   defstruct [:clauses]
 

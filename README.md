@@ -1,6 +1,7 @@
 # Brex
 [![Build Status](https://travis-ci.org/Zeeker/brex.svg?branch=master)](https://travis-ci.org/Zeeker/brex)
 [![Coverage Status](https://coveralls.io/repos/github/Zeeker/brex/badge.svg?branch=master)](https://coveralls.io/github/Zeeker/brex?branch=master)
+[![Hex.pm](https://img.shields.io/hexpm/v/brex.svg)](https://hex.pm/packages/brex)
 
 *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern) implementation in Elixir.*
 

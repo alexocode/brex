@@ -10,7 +10,7 @@ Using `brex` you can easily
 - __compose__ and
 - __evaluate__
 
-business rules to dynamically drive the flow of your application.
+**b**usiness **r**les to dynamically drive the flow of your application.
 
 ## Motiviation
 

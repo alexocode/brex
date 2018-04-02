@@ -5,7 +5,7 @@ defmodule Spex.Operator.AllSpec do
 
   it_behaves_like Shared.EvaluateSpec,
     rule_type: All,
-    rule: All.new([&is_list/1, &(length(&1) > 0)]),
+    rule: Spex.all(&is_list/1, &(length(&1) > 0)),
     valid_values: [
       [1, 2, 3],
       [a: 1, b: 2]

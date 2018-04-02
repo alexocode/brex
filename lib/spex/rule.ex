@@ -1,10 +1,35 @@
 defmodule Spex.Rule do
-  # One __could__ generate this: but that would require writing a recursive AST generating macro, so nope
-  # @type t :: Rule.Function.t() | Rule.Module.t() | Rule.Operator.t() | Rule.Struct.t()
+  @moduledoc """
+  The behaviour for module based rules which requires an `evaluate/1` function.
+  Also offers some helpful functions to deal with all kinds of rules.
 
+  Furthermore contains the `Spex.Rule.Evaluable` protocol which represents the
+  basic building block of `Spex`. Currently supported rule types are:
+
+  - `atom` or rather Modules
+  - `function` with arity 1
+  - `struct`s, take a look at `Spex.Rule.Struct` for details
+
+  # Example - Module based rule
+
+      defmodule OkRule do
+        @behaviour Spex.Rule
+
+        @impl Spex.Rule
+        def evaluate(:ok), do: true
+
+        @impl Spex.Rule
+        def evaluate({:ok, _}), do: true
+
+        @impl Spex.Rule
+        def evaluate(_), do: false
+      end
+  """
   alias Spex.Types
 
   @type t :: any()
+
+  @callback evaluate(value :: Types.value()) :: Types.evaluation()
 
   defprotocol Evaluable do
     @moduledoc """
@@ -20,11 +45,11 @@ defmodule Spex.Rule do
   end
 
   @doc """
-  Calls `evaluate/2` with the given rule and value and wraps it into a
+  Calls `evaluate/2` with the given rule and value and wraps it in a
   `Spex.Result` struct.
   """
-  @spec result(t(), Types.value()) :: Types.result()
-  def result(rule, value) do
+  @spec evaluate(t(), Types.value()) :: Types.result()
+  def evaluate(rule, value) do
     %Spex.Result{
       evaluation: Evaluable.evaluate(rule, value),
       rule: rule,
@@ -44,7 +69,7 @@ defmodule Spex.Rule do
       iex> Spex.Rule.type(SomeModuleRule)
       Spex.Rule.Evaluable.Atom
 
-      iex> Spex.Rule.type(Spex.Operator.All.new([]))
+      iex> Spex.Rule.type(Spex.all([]))
       Spex.Rule.Evaluable.Spex.Operator.All
 
       iex> Spex.Rule.type("something")
@@ -65,7 +90,7 @@ defmodule Spex.Rule do
       iex> Spex.Rule.number_of_clauses(rules)
       1
 
-      iex> rules = [fn _ -> true end, Spex.Operator.any(fn _ -> false end, fn _ -> true end)]
+      iex> rules = [fn _ -> true end, Spex.any(fn _ -> false end, fn _ -> true end)]
       iex> Spex.Rule.number_of_clauses(rules)
       3
   """

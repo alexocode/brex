@@ -1,11 +1,12 @@
 defmodule Spex.Operator.Builder do
+  @moduledoc false
+
   def build_from_use(opts) do
     aggregator = Keyword.get(opts, :aggregator)
     clauses = Keyword.get(opts, :clauses, :clauses)
 
     quote do
       @after_compile unquote(__MODULE__)
-      @behaviour Spex.Operator
 
       use Spex.Rule.Struct
 
@@ -25,7 +26,7 @@ defmodule Spex.Operator.Builder do
         results =
           rule
           |> clauses()
-          |> Enum.map(&Spex.result(&1, value))
+          |> Enum.map(&Spex.evaluate(&1, value))
 
         if aggregate(rule, results) do
           {:ok, results}
@@ -76,7 +77,7 @@ defmodule Spex.Operator.Builder do
 
   defp build(:new, key) when is_atom(key) do
     quote do
-      def new(clauses), do: struct(__MODULE__, %{unquote(key) => clauses})
+      def new(operator, clauses), do: struct(operator, %{unquote(key) => clauses})
     end
   end
 
@@ -91,14 +92,22 @@ defmodule Spex.Operator.Builder do
         line: env.line,
         description:
           "cannot use Spex.Operator " <>
-            "on module #{inspect(module)} without defining aggregator/1 and clauses/1"
+            "on module #{inspect(module)} without defining aggregator/1 and clauses/1. " <>
+            "Take a look at the `Spex.Operator` module documentation for more information."
   end
 
   defp defimpl_nestable(module) do
-    if function_exported?(module, :aggregator, 1) and function_exported?(module, :clauses, 1) do
+    expected_functions = [
+      [:aggregator, 1],
+      [:clauses, 1],
+      [:new, 2]
+    ]
+
+    if Enum.all?(expected_functions, &apply(Kernel, :function_exported?, [module | &1])) do
       defimpl Spex.Operator.Aggregatable, for: module do
-        defdelegate aggregator(rule), to: module
-        defdelegate clauses(rule), to: module
+        defdelegate aggregator(operator), to: module
+        defdelegate clauses(operator), to: module
+        defdelegate new(operator, clauses), to: module
       end
     end
   end

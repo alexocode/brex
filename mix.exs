@@ -17,7 +17,12 @@ defmodule Spex.Mixfile do
       test_coverage: [tool: ExCoveralls],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+
+      # Docs
+      name: "Spex",
+      source_url: "https://github.com/Zeeker/spex",
+      homepage_url: "https://github.com/Zeeker/spex"
     ]
   end
 
@@ -35,6 +40,10 @@ defmodule Spex.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # No Runtime
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+
+      # Test
       {:excoveralls, "~> 0.8", only: :test},
       {:espec, github: "antonmi/espec", only: :test}
     ]

@@ -1,12 +1,79 @@
 defmodule Spex do
   @moduledoc """
-  The main module. Provides shortcut functions to evaluate rules, reduce the
-  results to a boolean and to check if some value satisfy some rules.
+  *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern)
+  implementation in Elixir.*
 
-  For further information take a look at the following modules:
-  - `Spex.Rule`
-  - `Spex.Result`
-  - `Spex.Operator`
+  Using `spex` you can easily
+
+  - __define__
+  - __compose__ and
+  - __evaluate__
+
+  business rules to dynamically drive the flow of your application.
+
+  # Basics
+
+  The lowest building stone of `Spex` is a __rule__. A rule can
+  have many shapes, for example this is a rule:
+
+      &is_list/1
+
+  This is a rule too:
+
+      Spex.all([&is_list/1, &(length(&1) > 0)])
+
+  Or this:
+
+      defmodule MyRule do
+        def evaluate(:foo), do: true
+        def evaluate(:bar), do: false
+      end
+
+  Also this:
+
+      defmodule MyStruct do
+        use Spex.Rule.Struct
+
+        defstruct [:foo]
+
+        def evaluate(%{foo: foo}, value) do
+          foo == value
+        end
+      end
+
+  ## Enough talk about defining rules, how can I _evaluate_ them?
+
+  Well great that you ask, that's simple too!
+
+      Spex.satisfies? MyRule, :foo # => true
+
+  As you can see, `Spex` is flexible and easy to use. All of this is based on
+  the `Spex.Rule.Evaluable` protocol, if you're really interested, take a look
+  at `Spex.Rule` which talks about the possible rule types a little bit more.
+
+  # Operators
+
+  Also, as you might have noticed, I used an `all/1` function in the examples
+  above. This is the __compose__ part of `Spex`: it allows you to link rules
+  using boolean logic.
+
+  It currently supports:
+
+  - `all/1`
+  - `any/1`
+  - `none/1`
+
+  I think the names speak for themself.
+
+  # More ...
+
+  Apart from that, this module mainly serves as a utility belt for dealing with
+  rules. It offers some functions to evaluate some rules, or to check if a given
+  value satisfies some rules.
+
+  But for this I would suggest to simply take a look at the functions in detail.
+
+  I hope you enjoy using `Spex`!
   """
 
   alias Spex.{Operator, Rule, Types}
@@ -20,6 +87,8 @@ defmodule Spex do
   @doc """
   Evaluates a rule for a given value and returns a boolean whether or not it
   satisfies the rule. Equivalent to a `result/2` followed by a `passed?/1` call.
+
+  Allows you to pass a list of rules which get linked calling `all/1`.
 
   # Examples
 
@@ -38,7 +107,7 @@ defmodule Spex do
   @spec satisfies?(one_or_many_rules(), value()) :: boolean()
   def satisfies?(rules, value) do
     rules
-    |> result(value)
+    |> evaluate(value)
     |> passed?()
   end
 
@@ -46,10 +115,12 @@ defmodule Spex do
   Evaluates a given rule for a given value. Returns a `Spex.Result` struct which
   contains the evaluated rules, the value and - of course - the evaluation result.
 
+  Allows you to pass a list of rules which get linked calling `all/1`.
+
   # Examples
 
       iex> rule = &(length(&1) > 0)
-      iex> result = Spex.result(rule, [])
+      iex> result = Spex.evaluate(rule, [])
       iex> match? %Spex.Result{
       ...>   evaluation: false,
       ...>   rule: _,
@@ -58,7 +129,7 @@ defmodule Spex do
       true
 
       iex> rules = [&is_list/1, &Keyword.keyword?/1]
-      iex> result = Spex.result(rules, [])
+      iex> result = Spex.evaluate(rules, [])
       iex> match? %Spex.Result{
       ...>   evaluation: {:ok, [%Spex.Result{evaluation: true}, %Spex.Result{}]},
       ...>   rule: %Spex.Operator.All{clauses: _},
@@ -66,15 +137,15 @@ defmodule Spex do
       ...> }, result
       true
   """
-  @spec result(one_or_many_rules(), value()) :: result()
-  def result(rules, value) do
+  @spec evaluate(one_or_many_rules(), value()) :: result()
+  def evaluate(rules, value) do
     rules
     |> wrap()
-    |> Rule.result(value)
+    |> Rule.evaluate(value)
   end
 
   defp wrap(rules) when is_list(rules) do
-    Spex.Operator.all(rules)
+    Spex.all(rules)
   end
 
   defp wrap(rule) do
@@ -130,30 +201,41 @@ defmodule Spex do
   @spec number_of_clauses(Types.rule()) :: non_neg_integer()
   defdelegate number_of_clauses(rule), to: Rule
 
-  for operator <- Operator.links() do
+  for operator <- Operator.default_operators() do
+    short_name =
+      operator
+      |> Macro.underscore()
+      |> Path.basename()
+      |> String.to_atom()
+
+    @doc "Shortcut for `Spex.#{operator}([rule1, rule2])`."
+    @spec unquote(short_name)(rule1 :: Types.rule(), rule2 :: Types.rule()) :: Operator.t()
+    def unquote(short_name)(rule1, rule2) do
+      unquote(short_name)([rule1, rule2])
+    end
+
     @doc """
     Links the given rules in a boolean fashion, similar to the `Enum` functions.
 
-    - `all` rules have to pass (`&&`)
-    - `any` one rule is sufficient to pass (`||`)
-    - `none` of the rules may pass (`!`)
+    - `all` rules have to pass (`and` / `&&`)
+    - `any` one rule is sufficient to pass (`or` / `||`)
+    - `none` of the rules may pass (`not` / `!`)
 
     # Examples
 
-        iex> Spex.#{operator} &is_list/1, &is_map/1
-        %#{inspect(Operator.type_for(operator: operator))}{
+        iex> Spex.#{short_name} &is_list/1, &is_map/1
+        %#{inspect(operator)}{
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1]
         }
 
-        iex> Spex.#{operator} [&is_list/1, &is_map/1, &is_binary/1]
-        %#{inspect(Operator.type_for(operator: operator))}{
+        iex> Spex.#{short_name} [&is_list/1, &is_map/1, &is_binary/1]
+        %#{inspect(operator)}{
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1, &:erlang.is_binary/1]
         }
     """
-    @spec unquote(operator)(list(Types.rule())) :: Operator.t()
-    defdelegate unquote(operator)(rules), to: Operator
-    @doc "Shortcut for `Spex.#{operator}([rule1, rule2])`."
-    @spec unquote(operator)(Types.rule(), Types.rule()) :: Operator.t()
-    defdelegate unquote(operator)(rule1, rule2), to: Operator
+    @spec unquote(short_name)(list(Types.rule())) :: Operator.t()
+    def unquote(short_name)(rules) do
+      Operator.new(unquote(operator), rules)
+    end
   end
 end

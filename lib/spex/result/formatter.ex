@@ -3,11 +3,11 @@ defmodule Spex.Result.Formatter do
   A behaviour specifying a `format/1` callback which takes a list of results and
   reduces them to whatever the formatter wants to.
 
-  When "used" the module provides a `format/1` clause which takes a single
-  result, ensures that it's a `Spex.Result` struct and wraps it in a list. These
-  defs have the lowest precedence and can be overridden as you see fit.
+  When "used" the module provides `format/1` definitions which handle a list of
+  `Spex.Result` structs and map them again to `format/1`. This defintions have
+  the lowest precedence and can be overridden as you see fit.
 
-  The last `format/1` clauses matches on anything and calls the imported
+  The last `format/1` definition matches on anything and calls the imported
   `invalid_result!/1` function which raises an `ArgumentError` with an
   informative message.
 
@@ -43,6 +43,10 @@ defmodule Spex.Result.Formatter do
     end
   end
 
+  @doc """
+  Raises an `ArgumentError` which informs the caller that the provided value was
+  __not__ a valid `Spex.Rule` struct.
+  """
   def invalid_result!(result) do
     raise ArgumentError,
           "Invalid result! Expected a list of or single `Spex.Result` struct but received: #{

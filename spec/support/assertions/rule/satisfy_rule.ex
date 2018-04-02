@@ -3,7 +3,7 @@ defmodule Spex.Assertions.Rule.SatisfyRule do
   use ESpec.Assertions.Interface
 
   defp match(value, {rule, :any}) do
-    %{evaluation: result} = Spex.result(rule, value)
+    %{evaluation: result} = Spex.evaluate(rule, value)
 
     {Spex.Result.passed?(result), result}
   end

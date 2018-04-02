@@ -12,7 +12,7 @@ defmodule Spex.Rule.FunctionSpec do
       :a,
       1,
       Support.SomeModuleRule,
-      Spex.Operator.all([])
+      Spex.all([])
     ]
 
   it_behaves_like Shared.EvaluateSpec,

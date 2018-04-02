@@ -15,7 +15,7 @@ defmodule Spex.Rule.ModuleSpec do
     invalid_rules: [
       1,
       &is_list/1,
-      Spex.Operator.all([])
+      Spex.all([])
     ]
 
   it_behaves_like Shared.EvaluateSpec,

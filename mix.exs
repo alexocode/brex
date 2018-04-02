@@ -4,7 +4,6 @@ defmodule Spex.Mixfile do
   def project do
     [
       app: :spex,
-      version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: [
@@ -22,7 +21,12 @@ defmodule Spex.Mixfile do
       # Docs
       name: "Spex",
       source_url: "https://github.com/Zeeker/spex",
-      homepage_url: "https://github.com/Zeeker/spex"
+      homepage_url: "https://github.com/Zeeker/spex",
+
+      # Hex
+      description: description(),
+      package: package(),
+      version: "0.1.0"
     ]
   end
 
@@ -52,6 +56,20 @@ defmodule Spex.Mixfile do
   def aliases do
     [
       test: "espec"
+    ]
+  end
+
+  def description do
+    "A Specification Pattern implementation in Elixir"
+  end
+
+  def package do
+    [
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/Zeeker/spex"
+      },
+      maintainers: ["Sascha Wolf <swolf.dev@gmail.com>"]
     ]
   end
 end

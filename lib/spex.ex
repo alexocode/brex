@@ -9,7 +9,7 @@ defmodule Spex do
   - __compose__ and
   - __evaluate__
 
-  rules at __runtime__.
+  business rules to dynamically drive the flow of your application.
 
   # Basics
 
@@ -41,12 +41,11 @@ defmodule Spex do
         end
       end
 
-  > Enough talk about defining rules, how can I __evaluate__ them?
+  ## Enough talk about defining rules, how can I _evaluate_ them?
 
   Well great that you ask, that's simple too!
 
-      Spex.satisfies? MyRule, :foo
-      true
+      Spex.satisfies? MyRule, :foo # => true
 
   As you can see, `Spex` is flexible and easy to use. All of this is based on
   the `Spex.Rule.Evaluable` protocol, if you're really interested, take a look

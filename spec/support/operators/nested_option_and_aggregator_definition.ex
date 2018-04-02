@@ -1,5 +1,5 @@
 defmodule Support.Operators.ClausesOptionAndAggregatorDefintion do
-  use Spex.Operator, clauses: :clauses
+  use Brex.Operator, clauses: :clauses
 
   defstruct [:clauses]
 

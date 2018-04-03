@@ -16,7 +16,7 @@ defmodule Brex.Result.Formatter.Rules do
       iex> results = [
       ...>   %Brex.Result{rule: &is_list/1, evaluation: true, value: [42]},
       ...>   %Brex.Result{
-      ...>     rule: %Brex.Operator.None{clauses: [&Keyword.keyword?/1]},
+      ...>     rule: Brex.none([&Keyword.keyword?/1]),
       ...>     evaluation: {:ok, [
       ...>       %Brex.Result{
       ...>         rule: &Keyword.keyword?/1,
@@ -28,7 +28,7 @@ defmodule Brex.Result.Formatter.Rules do
       ...>   },
       ...> ]
       iex> Brex.Result.Formatter.Rules.format(results)
-      [&is_list/1, %Brex.Operator.None{clauses: [&Keyword.keyword?/1]}]
+      [&is_list/1, %Brex.Operator{aggregator: &Brex.Aggregator.none?/1, clauses: [&Keyword.keyword?/1]}]
 
 
       iex> Brex.Result.Formatter.Rules.format([:foo])

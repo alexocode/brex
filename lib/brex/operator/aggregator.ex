@@ -1,4 +1,4 @@
-defmodule Brex.Aggregator do
+defmodule Brex.Operator.Aggregator do
   defdelegate all?(enum), to: Enum
   defdelegate any?(enum), to: Enum
 

@@ -213,13 +213,13 @@ defmodule Brex do
 
         iex> Brex.#{operator} &is_list/1, &is_map/1
         %Brex.Operator{
-          aggregator: &Brex.Aggregator.#{operator}?/1,
+          aggregator: &Brex.Operator.Aggregator.#{operator}?/1,
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1]
         }
 
         iex> Brex.#{operator} [&is_list/1, &is_map/1, &is_binary/1]
         %Brex.Operator{
-          aggregator: &Brex.Aggregator.#{operator}?/1,
+          aggregator: &Brex.Operator.Aggregator.#{operator}?/1,
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1, &:erlang.is_binary/1]
         }
     """
@@ -237,7 +237,7 @@ defmodule Brex do
   @spec all(list(Types.rule())) :: Operator.t()
   def all(rules) do
     %Operator{
-      aggregator: &Brex.Aggregator.all?/1,
+      aggregator: &Brex.Operator.Aggregator.all?/1,
       clauses: rules
     }
   end
@@ -246,7 +246,7 @@ defmodule Brex do
   @spec any(list(Types.rule())) :: Operator.t()
   def any(rules) do
     %Operator{
-      aggregator: &Brex.Aggregator.any?/1,
+      aggregator: &Brex.Operator.Aggregator.any?/1,
       clauses: rules
     }
   end
@@ -255,7 +255,7 @@ defmodule Brex do
   @spec none(list(Types.rule())) :: Operator.t()
   def none(rules) do
     %Operator{
-      aggregator: &Brex.Aggregator.none?/1,
+      aggregator: &Brex.Operator.Aggregator.none?/1,
       clauses: rules
     }
   end

@@ -28,7 +28,7 @@ defmodule Brex.Result.Formatter.Rules do
       ...>   },
       ...> ]
       iex> Brex.Result.Formatter.Rules.format(results)
-      [&is_list/1, %Brex.Operator{aggregator: &Brex.Aggregator.none?/1, clauses: [&Keyword.keyword?/1]}]
+      [&is_list/1, %Brex.Operator{aggregator: &Brex.Operator.Aggregator.none?/1, clauses: [&Keyword.keyword?/1]}]
 
 
       iex> Brex.Result.Formatter.Rules.format([:foo])

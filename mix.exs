@@ -26,7 +26,7 @@ defmodule Brex.Mixfile do
       # Hex
       description: description(),
       package: package(),
-      version: "0.1.0"
+      version: "0.2.0"
     ]
   end
 
@@ -45,11 +45,11 @@ defmodule Brex.Mixfile do
   defp deps do
     [
       # No Runtime
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
 
       # Test
       {:excoveralls, "~> 0.8", only: :test},
-      {:espec, github: "antonmi/espec", only: :test}
+      {:espec, "~> 1.6", only: :test}
     ]
   end
 

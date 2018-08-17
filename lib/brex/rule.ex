@@ -70,7 +70,7 @@ defmodule Brex.Rule do
       Brex.Rule.Evaluable.Atom
 
       iex> Brex.Rule.type(Brex.all([]))
-      Brex.Rule.Evaluable.Brex.Operator.All
+      Brex.Rule.Evaluable.Brex.Operator
 
       iex> Brex.Rule.type("something")
       nil

@@ -54,8 +54,8 @@ defmodule Brex do
   # Operators
 
   Also, as you might have noticed, I used an `all/1` function in the examples
-  above. This is the __compose__ part of `Brex`: it allows you to link rules
-  using boolean logic.
+  above. It's called a `Brex.Operator` and represents the __compose__ part of
+  `Brex`: it allows you to link rules using boolean logic.
 
   It currently supports:
 
@@ -132,7 +132,7 @@ defmodule Brex do
       iex> result = Brex.evaluate(rules, [])
       iex> match? %Brex.Result{
       ...>   evaluation: {:ok, [%Brex.Result{evaluation: true}, %Brex.Result{}]},
-      ...>   rule: %Brex.Operator.All{clauses: _},
+      ...>   rule: %Brex.Operator{clauses: _},
       ...>   value: []
       ...> }, result
       true
@@ -201,20 +201,8 @@ defmodule Brex do
   @spec number_of_clauses(Types.rule()) :: non_neg_integer()
   defdelegate number_of_clauses(rule), to: Rule
 
-  for operator <- Operator.default_operators() do
-    short_name =
-      operator
-      |> Macro.underscore()
-      |> Path.basename()
-      |> String.to_atom()
-
-    @doc "Shortcut for `Brex.#{operator}([rule1, rule2])`."
-    @spec unquote(short_name)(rule1 :: Types.rule(), rule2 :: Types.rule()) :: Operator.t()
-    def unquote(short_name)(rule1, rule2) do
-      unquote(short_name)([rule1, rule2])
-    end
-
-    @doc """
+  operator_doc = fn operator ->
+    """
     Links the given rules in a boolean fashion, similar to the `Enum` functions.
 
     - `all` rules have to pass (`and` / `&&`)
@@ -223,19 +211,29 @@ defmodule Brex do
 
     # Examples
 
-        iex> Brex.#{short_name} &is_list/1, &is_map/1
-        %#{inspect(operator)}{
+        iex> Brex.#{operator} &is_list/1, &is_map/1
+        %Brex.Operator{
+          aggregator: &Brex.Operator.Aggregator.#{operator}?/1,
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1]
         }
 
-        iex> Brex.#{short_name} [&is_list/1, &is_map/1, &is_binary/1]
-        %#{inspect(operator)}{
+        iex> Brex.#{operator} [&is_list/1, &is_map/1, &is_binary/1]
+        %Brex.Operator{
+          aggregator: &Brex.Operator.Aggregator.#{operator}?/1,
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1, &:erlang.is_binary/1]
         }
     """
-    @spec unquote(short_name)(list(Types.rule())) :: Operator.t()
-    def unquote(short_name)(rules) do
-      Operator.new(unquote(operator), rules)
+  end
+
+  for operator <- [:all, :any, :none] do
+    @doc "Shortcut for `Brex.#{operator}([rule1, rule2])`."
+    @spec unquote(operator)(rule1 :: Types.rule(), rule2 :: Types.rule()) :: Operator.t()
+    def unquote(operator)(rule1, rule2) do
+      unquote(operator)([rule1, rule2])
     end
+
+    @doc operator_doc.(operator)
+    @spec unquote(operator)(list(Types.rule())) :: Operator.t()
+    defdelegate unquote(operator)(rules), to: Brex.Operator.Defaults
   end
 end

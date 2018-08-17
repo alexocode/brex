@@ -231,32 +231,9 @@ defmodule Brex do
     def unquote(operator)(rule1, rule2) do
       unquote(operator)([rule1, rule2])
     end
-  end
 
-  @doc operator_doc.(:all)
-  @spec all(list(Types.rule())) :: Operator.t()
-  def all(rules) do
-    %Operator{
-      aggregator: &Brex.Operator.Aggregator.all?/1,
-      clauses: rules
-    }
-  end
-
-  @doc operator_doc.(:any)
-  @spec any(list(Types.rule())) :: Operator.t()
-  def any(rules) do
-    %Operator{
-      aggregator: &Brex.Operator.Aggregator.any?/1,
-      clauses: rules
-    }
-  end
-
-  @doc operator_doc.(:none)
-  @spec none(list(Types.rule())) :: Operator.t()
-  def none(rules) do
-    %Operator{
-      aggregator: &Brex.Operator.Aggregator.none?/1,
-      clauses: rules
-    }
+    @doc operator_doc.(operator)
+    @spec unquote(operator)(list(Types.rule())) :: Operator.t()
+    defdelegate unquote(operator)(rules), to: Brex.Operator.Defaults
   end
 end

@@ -49,7 +49,7 @@ defmodule Brex.Mixfile do
 
       # Test
       {:excoveralls, "~> 0.8", only: :test},
-      {:espec, github: "antonmi/espec", only: :test}
+      {:espec, "~> 1.6", only: :test}
     ]
   end
 

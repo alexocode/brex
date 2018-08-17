@@ -1,57 +1,20 @@
 defmodule Brex.Operator do
   @moduledoc """
-  Contains the `Aggregatable` root protocol for operators, provides some helpers
-  for Operators and is `use`able to define ...
+  A struct which represents a rule linking two or more other rules together. It
+  does this by accepting a list of `clauses` and an `aggregator`, being an arity
+  1 function which reduces a list of booleans into a single boolean.
 
   # Custom Operators
 
-  **TL;DR**
+  Creating a custom operator is merely a case of wrapping your rules into the
+  `Brex.Operator` struct and providing your custom `aggregator` alongside.
 
-  1. `use Brex.Operator`
-  2. define a struct with a `clauses` key (`defstruct [:clauses]`)
-  3. define an `aggregator/1` function and return the aggregating function
+  ## Example
 
-  There are various `use` options to control this behaviour and to make your
-  life easier.
-
-  ## Options
-  ### `aggregator`
-
-  This controls the aggregator definition, it can receive:
-
-  - a function reference: `&Enum.all?/1`
-  - an anonymous function: `&Enum.all(&1)` or `fn v -> Enum.all(v) end`
-  - an atom, identifying a function in this module: `:my_aggregator`
-  - a tuple, identifying a function in a module: `{MyModule, :my_aggregator}`
-
-  ### `clauses`
-
-  Allows to override the expected default key (`clauses`) for contained
-  "sub-rules".
-
-  # How does this magic work?
-
-  Brex operators are based on the `Brex.Operator.Aggregatable` protocol. When
-  calling `use Brex.Operator` Brex tries to define a number of functions for you
-  which it then uses to implement the protocol. The protocol calls then simply
-  delegate to the functions in your custom operator module.
-
-  Furthermore it defines an `evaluate/2` function which is necessary to actually
-  use this operator as a Brex rule. This might change in the future, to make
-  implementing the `Aggregatable` protocol sufficient for defining custom operators.
-
-  To do all of this it calls the `Brex.Operator.Builder.build_from_use/1`
-  function, which does a number of things.
-
-  1. it defines an `aggregator/1` function, if an `aggregator` option has been given
-  2. it defines a `clauses/1` function, which extracts the clauses from the struct
-  3. it defines a `new/2` function, which news an operator with some clauses
-
-  After that it tries to define the implementation of the `Aggregatable`
-  protocol, which simply delegates it's calls to the using module.
-
-  Due to that it checks if the necessary functions (`aggregator/1` and
-  `clauses/1`) exist. In case they don't exist, a `CompileError` is being raised.
+      %Brex.Operator{
+        rules: [my_rule1, my_rule2],
+        aggregator: my_aggregation_function # For example &Enum.all?/1
+      }
   """
   use Brex.Rule.Struct
 

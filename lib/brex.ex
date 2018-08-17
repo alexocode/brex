@@ -54,8 +54,8 @@ defmodule Brex do
   # Operators
 
   Also, as you might have noticed, I used an `all/1` function in the examples
-  above. This is the __compose__ part of `Brex`: it allows you to link rules
-  using boolean logic.
+  above. It's called a `Brex.Operator` and represents the __compose__ part of
+  `Brex`: it allows you to link rules using boolean logic.
 
   It currently supports:
 

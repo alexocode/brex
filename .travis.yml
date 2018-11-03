@@ -1,4 +1,7 @@
 language: elixir
+cache:
+  directories:
+    - _build/
 
 elixir:
   - 1.6.0

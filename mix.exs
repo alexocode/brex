@@ -26,9 +26,11 @@ defmodule Brex.Mixfile do
       # Hex
       description: description(),
       package: package(),
-      version: "0.2.0"
+      version: version()
     ]
   end
+
+  defp version, do: "version" |> File.read!() |> String.trim()
 
   # Run "mix help compile.app" to learn about applications.
   def application do

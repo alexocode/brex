@@ -20,7 +20,8 @@ otp_release:
 env:
   - MIX_ENV=test
 stages:
-  - test
+  - name: test
+    if: NOT branch =~ ^wip/
   - name: docs
     if: branch = master
   - name: publish

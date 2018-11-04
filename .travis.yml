@@ -1,4 +1,5 @@
 language: elixir
+sudo: false
 cache:
   directories:
     - deps/
@@ -18,18 +19,33 @@ otp_release:
 
 env:
   - MIX_ENV=test
+stages:
+  - test
+  - name: docs
+    if: branch = master
+  - name: publish
+    if: branch = master AND tag =~ ^v
 
-matrix:
+jobs:
   exclude:
     - elixir: 1.6.0
       otp_release: 21.0
     - elixir: 1.6.0
       otp_release: 21.1.1
 
-sudo: false
-
-script:
-  - mix coveralls.travis
+  include:
+    - stage: test
+      script: mix coveralls.travis
+    - stage: docs
+      script: mix hex.publish docs
+      elixir: 1.7.4
+      otp_release: 21.1.1
+    - stage: publish
+      script: mix hex.publish package
+      elixir: 1.7.4
+      otp_release: 21.1.1
+      env:
+        - MIX_ENV=prod
 
 notifications:
   recipients:

@@ -12,9 +12,7 @@ defmodule Brex.Result do
   """
   alias Brex.Types
 
-  @type evaluation :: success() | failure()
-  @type success :: true | :ok | {:ok, any()}
-  @type failure :: false | :error | {:error, any()}
+  @type evaluation :: boolean() | any()
   @type rule :: Types.rule()
   @type value :: Types.value()
 
@@ -30,9 +28,10 @@ defmodule Brex.Result do
 
   def passed?(boolean) when is_boolean(boolean), do: boolean
 
-  def passed?(:ok), do: true
-  def passed?({:ok, _}), do: true
+  def passed?(other) do
+    Brex.satisfies?(other, success_rule()) or not 
+  end
 
-  def passed?(:error), do: false
-  def passed?({:error, _}), do: false
+  defp failure_rule, do: Brex.any(Application.fetch_env!(:brex, :failure_rules))
+  defp success_rule, do: Brex.any(Application.fetch_env!(:brex, :success_rules))
 end

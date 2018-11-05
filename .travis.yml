@@ -41,6 +41,8 @@ jobs:
       script: mix hex.publish docs
       elixir: 1.7.4
       otp_release: 21.1.1
+      env:
+        - MIX_ENV=dev
     - stage: publish
       script: mix hex.publish package
       elixir: 1.7.4

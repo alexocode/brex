@@ -38,13 +38,13 @@ jobs:
     - stage: test
       script: mix coveralls.travis
     - stage: docs
-      script: mix hex.publish docs
+      script: mix hex.publish docs --yes
       elixir: 1.7.4
       otp_release: 21.1.1
       env:
         - MIX_ENV=dev
     - stage: publish
-      script: mix hex.publish
+      script: mix hex.publish --yes
       elixir: 1.7.4
       otp_release: 21.1.1
       env:

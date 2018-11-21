@@ -25,7 +25,7 @@ stages:
   - name: docs
     if: branch = master
   - name: publish
-    if: branch = master AND tag =~ ^v
+    if: tag =~ ^v
 
 jobs:
   exclude:
@@ -44,7 +44,7 @@ jobs:
       env:
         - MIX_ENV=dev
     - stage: publish
-      script: mix hex.publish package
+      script: mix hex.publish
       elixir: 1.7.4
       otp_release: 21.1.1
       env:

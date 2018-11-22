@@ -26,7 +26,7 @@ ask 'Want to bump?' || exit 1
 echo "$new_version" > version
 
 if ask 'Want to commit the version change?' Y; then
-  git commit --message="Project: Bump version from $current_version to $new_version" -- mix.exs
+  git commit --message="Project: Bump version from $current_version to $new_version" -- version
 
   echo
   ask "Want to add v$new_version tag?" Y && git tag -ae "v$new_version" -m "Release $new_version: "

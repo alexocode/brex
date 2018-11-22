@@ -48,7 +48,7 @@ jobs:
       elixir: 1.7.4
       otp_release: 21.1.1
       env:
-        - MIX_ENV=prod
+        - MIX_ENV=dev
 
 notifications:
   recipients:

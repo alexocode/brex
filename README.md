@@ -11,13 +11,13 @@ Using `brex` you can easily
 - __compose__ and
 - __evaluate__
 
-**b**usiness **r**les to dynamically drive the flow of your application.
+**b**usiness **r**ules to dynamically drive the flow of your application.
 
 ## Motiviation
 
 `Brex` was built to allow you to define and compose rules to evaluate them later. This enables you to build your rules from some kind of configuration, be it a database, a CSV or JSON or anything else.
 
-Maybe you want to allow your customer to create dynamic rules for sending out emails or push notifications? Or you want to decide on the type of event to trigger based on imcoming data? Or you think bigger and want to create some kind of flow chart interface?
+Maybe you want to allow your customer to create dynamic rules for sending out emails or push notifications? Or you want to decide on the type of event to trigger based on incoming data? Or you think bigger and want to create some kind of flow chart interface?
 
 Whatever your particular use-case, `Brex` has you covered when it comes to composition of rules.
 

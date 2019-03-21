@@ -1,6 +1,8 @@
 defmodule Brex.Mixfile do
   use Mix.Project
 
+  @version "version" |> File.read!() |> String.trim()
+
   def project do
     [
       app: :brex,
@@ -26,11 +28,9 @@ defmodule Brex.Mixfile do
       # Hex
       description: description(),
       package: package(),
-      version: version()
+      version: @version
     ]
   end
-
-  defp version, do: "version" |> File.read!() |> String.trim()
 
   # Run "mix help compile.app" to learn about applications.
   def application do

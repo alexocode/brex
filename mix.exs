@@ -67,6 +67,7 @@ defmodule Brex.Mixfile do
 
   def package do
     [
+      files: ["lib", "mix.exs", "LICENSE*", "README*", "version"],
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/Zeeker/brex"

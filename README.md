@@ -1,6 +1,6 @@
 # Brex
-[![Build Status](https://travis-ci.org/Zeeker/brex.svg?branch=master)](https://travis-ci.org/Zeeker/brex)
-[![Coverage Status](https://coveralls.io/repos/github/Zeeker/brex/badge.svg?branch=master)](https://coveralls.io/github/Zeeker/brex?branch=master)
+[![Build Status](https://travis-ci.org/sascha-wolf/brex.svg?branch=master)](https://travis-ci.org/sascha-wolf/brex)
+[![Coverage Status](https://coveralls.io/repos/github/sascha-wolf/brex/badge.svg?branch=master)](https://coveralls.io/github/sascha-wolf/brex?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/brex.svg)](https://hex.pm/packages/brex)
 
 *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern) implementation in Elixir.*
@@ -104,6 +104,6 @@ end
 
 Right now, there is no need for any kind of configuration in `Brex`. In case you see some need for it, please open an issue.
 
-[evaluable]: https://github.com/Zeeker/brex/blob/master/lib/brex/rule.ex#L9-L20
-[operator]: https://github.com/Zeeker/brex/blob/master/lib/brex/operator.ex
-[rule]: https://github.com/Zeeker/brex/blob/master/lib/brex/rule.ex
+[evaluable]: https://github.com/sascha-wolf/brex/blob/master/lib/brex/rule.ex#L9-L20
+[operator]: https://github.com/sascha-wolf/brex/blob/master/lib/brex/operator.ex
+[rule]: https://github.com/sascha-wolf/brex/blob/master/lib/brex/rule.ex

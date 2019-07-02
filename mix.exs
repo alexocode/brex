@@ -22,8 +22,8 @@ defmodule Brex.Mixfile do
 
       # Docs
       name: "Brex",
-      source_url: "https://github.com/Zeeker/brex",
-      homepage_url: "https://github.com/Zeeker/brex",
+      source_url: "https://github.com/sascha-wolf/brex",
+      homepage_url: "https://github.com/sascha-wolf/brex",
 
       # Hex
       description: description(),
@@ -70,7 +70,7 @@ defmodule Brex.Mixfile do
       files: ["lib", "mix.exs", "LICENSE*", "README*", "version"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/Zeeker/brex"
+        "GitHub" => "https://github.com/sascha-wolf/brex"
       },
       maintainers: ["Sascha Wolf <swolf.dev@gmail.com>"]
     ]

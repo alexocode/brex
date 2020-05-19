@@ -5,18 +5,6 @@ cache:
     - deps/
     - _build/
 
-elixir:
-  - 1.6.0
-  - 1.6.6
-  - 1.7.0
-  - 1.7.4
-
-otp_release:
-  - 20.0
-  - 20.3
-  - 21.0
-  - 21.1.1
-
 env:
   - MIX_ENV=test
 stages:
@@ -27,22 +15,88 @@ stages:
   - name: publish
     if: tag =~ ^v
 
+elixir:
+  - '1.6.0'
+  - '1.6.6'
+  - '1.7.0'
+  - '1.8.0'
+  - '1.9.0'
+  - '1.10.0'
+  - '1.10.3'
+otp_release:
+  - '19.0'
+  - '20.0'
+  - '21.0'
+  - '22.0'
+  - '23.0'
+
 jobs:
   exclude:
-    - elixir: 1.6.0
-      otp_release: 21.0
-    - elixir: 1.6.0
-      otp_release: 21.1.1
+    # See this page for version compatibility:
+    # https://hexdocs.pm/elixir/master/compatibility-and-deprecations.html
+
+    # elixir 1.6.0
+    - elixir: '1.6.0'
+      otp_release: '21.0'
+    - elixir: '1.6.0'
+      otp_release: '22.0'
+    - elixir: '1.6.0'
+      otp_release: '23.0'
+
+    # elixir 1.6.6
+    - elixir: '1.6.6'
+      otp_release: '22.0'
+    - elixir: '1.6.6'
+      otp_release: '23.0'
+
+    # elixir 1.7.0
+    - elixir: '1.7.0'
+      otp_release: '23.0'
+
+    # elixir 1.7.0
+    - elixir: '1.7.0'
+      otp_release: '23.0'
+
+    # elixir 1.8.0
+    - elixir: '1.8.0'
+      otp_release: '19.0'
+    - elixir: '1.8.0'
+      otp_release: '23.0'
+
+    # elixir 1.9.0
+    - elixir: '1.9.0'
+      otp_release: '19.0'
+    - elixir: '1.9.0'
+      otp_release: '23.0'
+
+    # elixir 1.10.0
+    - elixir: '1.10.0'
+      otp_release: '19.0'
+    - elixir: '1.10.0'
+      otp_release: '20.0'
+    - elixir: '1.10.0'
+      otp_release: '23.0'
+
+    # elixir 1.10.3
+    - elixir: '1.10.3'
+      otp_release: '19.0'
+    - elixir: '1.10.3'
+      otp_release: '20.0'
 
   include:
+    ############
+    # Pipeline #
+    ############
     - stage: test
       script: mix coveralls.travis
+
     - stage: docs
       script: mix hex.publish docs --yes
       elixir: 1.7.4
       otp_release: 21.1.1
       env:
         - MIX_ENV=dev
+
     - stage: publish
       script: mix hex.publish --yes
       elixir: 1.7.4

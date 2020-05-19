@@ -1,7 +1,9 @@
 # Brex
 [![Build Status](https://travis-ci.org/sascha-wolf/brex.svg?branch=master)](https://travis-ci.org/sascha-wolf/brex)
 [![Coverage Status](https://coveralls.io/repos/github/sascha-wolf/brex/badge.svg?branch=master)](https://coveralls.io/github/sascha-wolf/brex?branch=master)
+[![Hexdocs.pm](https://img.shields.io/badge/hexdocs-online-blue)](https://hexdocs.pm/brex/)
 [![Hex.pm](https://img.shields.io/hexpm/v/brex.svg)](https://hex.pm/packages/brex)
+[![Hex.pm Downloads](https://img.shields.io/hexpm/dt/brex)](https://hex.pm/packages/brex)
 
 *A [Specification Pattern](https://en.wikipedia.org/wiki/Specification_pattern) implementation in Elixir.*
 

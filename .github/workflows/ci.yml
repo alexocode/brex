@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  mix_test:
+    name: mix test (Erlang/OTP ${{matrix.otp}} | Elixir ${{matrix.elixir}})
+    runs-on: ubuntu-latest
+    container: hexpm/elixir:${{ matrix.elixir }}-erlang-${{ matrix.otp }}-alpine-3.11.6
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - elixir: 1.6.6
+            otp: 19.3.6.13
+          - elixir: 1.7.4
+            otp: 19.3.6.13
+          - elixir: 1.8.2
+            otp: 20.3.8.26
+          - elixir: 1.9.4
+            otp: 20.3.8.26
+          - elixir: 1.10.3
+            otp: 21.3.8.16
+    env:
+      MIX_ENV: test
+    steps:
+      - uses: actions/checkout@v2.3.1
+
+      - name: Cache - deps/
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-deps-
+
+      - name: Install Dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+
+      - name: Cache - _build/
+        uses: actions/cache@v1
+        with:
+          path: _build/
+          key: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-build-
+
+      - run: mix compile
+      - name: Run tests
+        run: |
+          # coveralls.github requires git to be available
+          apk add --no-cache git > /dev/null
+
+          mix coveralls.github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  check_style:
+    name: Check style
+    runs-on: ubuntu-latest
+    container: hexpm/elixir:1.10.3-erlang-22.1.8.1-alpine-3.11.6
+    steps:
+      - uses: actions/checkout@v2.3.1
+
+      - name: Cache - deps/
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: alpine-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-deps-
+
+      - name: Install Dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+
+      - name: Cache - _build/
+        uses: actions/cache@v1
+        with:
+          path: _build/
+          key: alpine-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-build-
+
+      - run: mix format --check-formatted
+      - run: mix credo

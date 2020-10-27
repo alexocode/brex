@@ -29,20 +29,39 @@ jobs:
             otp: 23.0.2
           - elixir: 1.11.0
             otp: 23.0.2
+    env:
+      MIX_ENV: test
     steps:
       - uses: actions/checkout@v2.3.1
+
+      - name: Cache - deps/
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-deps-
+
       - name: Install Dependencies
         run: |
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
-      - run: |
+
+      - name: Cache - _build/
+        uses: actions/cache@v1
+        with:
+          path: _build/
+          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-build-
+
+      - run: mix compile
+      - name: Run tests
+        run: |
           # coveralls.github requires git to be available
           apk add --no-cache git > /dev/null
 
           mix coveralls.github
         env:
-          MIX_ENV: test
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check_style:
@@ -51,10 +70,26 @@ jobs:
     container: hexpm/elixir:1.11.0-erlang-23.0.2-alpine-3.11.6
     steps:
       - uses: actions/checkout@v2.3.1
+
+      - name: Cache - deps/
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-deps-
+
       - name: Install Dependencies
         run: |
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
+
+      - name: Cache - _build/
+        uses: actions/cache@v1
+        with:
+          path: _build/
+          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-build-
+
       - run: mix format --check-formatted
       - run: mix credo

@@ -1,5 +1,5 @@
 # Brex
-[![Build Status](https://travis-ci.org/sascha-wolf/brex.svg?branch=master)](https://travis-ci.org/sascha-wolf/brex)
+[![CI](https://github.com/sascha-wolf/brex/workflows/CI/badge.svg)](https://github.com/sascha-wolf/brex/actions?query=workflow%3ACI+branch%3Amain)
 [![Coverage Status](https://coveralls.io/repos/github/sascha-wolf/brex/badge.svg?branch=master)](https://coveralls.io/github/sascha-wolf/brex?branch=master)
 [![Hexdocs.pm](https://img.shields.io/badge/hexdocs-online-blue)](https://hexdocs.pm/brex/)
 [![Hex.pm](https://img.shields.io/hexpm/v/brex.svg)](https://hex.pm/packages/brex)

@@ -51,7 +51,7 @@ defmodule Brex.Mixfile do
 
       # Test
       {:credo, "~> 1.4", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.8", only: :test},
+      {:excoveralls, "~> 0.13", only: :test},
       {:espec, "~> 1.6", only: :test}
     ]
   end

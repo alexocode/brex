@@ -20,5 +20,5 @@ defmodule Brex.Operator.Aggregator do
     false
   """
   def none?([]), do: true
-  def none?(enum), do: not all?(enum)
+  def none?(enum), do: not any?(enum)
 end

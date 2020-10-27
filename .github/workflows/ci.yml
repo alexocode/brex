@@ -38,8 +38,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: deps/
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-deps-
+          key: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-deps-
 
       - name: Install Dependencies
         run: |
@@ -51,8 +51,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: _build/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-build-
+          key: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-elixir-${{ matrix.elixir }}-otp-${{ matrix.otp }}-build-
 
       - run: mix compile
       - name: Run tests
@@ -75,8 +75,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: deps/
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-deps-
+          key: alpine-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-deps-
 
       - name: Install Dependencies
         run: |
@@ -88,8 +88,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: _build/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-build-
+          key: alpine-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: alpine-build-
 
       - run: mix format --check-formatted
       - run: mix credo

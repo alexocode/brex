@@ -36,7 +36,11 @@ jobs:
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
-      - run: mix coveralls.github
+      - run: |
+          # coveralls.github requires git to be available
+          apk add --no-cache git > /dev/null
+
+          mix coveralls.github
         env:
           MIX_ENV: test
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

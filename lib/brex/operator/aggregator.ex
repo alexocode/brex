@@ -10,13 +10,13 @@ defmodule Brex.Operator.Aggregator do
     iex> Brex.Operator.Aggregator.none?([])
     true
 
-    iex> Brex.Operator.Aggregator.none?([nil, nil])
+    iex> Brex.Operator.Aggregator.none?([false, false])
     true
 
-    iex> Brex.Operator.Aggregator.none?([1, 2, nil])
-    true
+    iex> Brex.Operator.Aggregator.none?([true, true, false])
+    false
 
-    iex> Brex.Operator.Aggregator.none?([1, 2, 3])
+    iex> Brex.Operator.Aggregator.none?([true, true, true])
     false
   """
   def none?([]), do: true

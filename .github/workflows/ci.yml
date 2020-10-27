@@ -36,7 +36,10 @@ jobs:
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
-      - run: mix test
+      - run: mix coveralls.github
+        env:
+          MIX_ENV: test
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check_style:
     name: Check style

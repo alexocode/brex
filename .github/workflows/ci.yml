@@ -25,10 +25,6 @@ jobs:
             otp: 20.3.8.26
           - elixir: 1.10.3
             otp: 21.3.8.16
-          - elixir: 1.10.3
-            otp: 23.0.2
-          - elixir: 1.11.0
-            otp: 23.0.2
     env:
       MIX_ENV: test
     steps:
@@ -67,7 +63,7 @@ jobs:
   check_style:
     name: Check style
     runs-on: ubuntu-latest
-    container: hexpm/elixir:1.11.0-erlang-23.0.2-alpine-3.11.6
+    container: hexpm/elixir:1.10.3-erlang-22.1.8.1-alpine-3.11.6
     steps:
       - uses: actions/checkout@v2.3.1
 

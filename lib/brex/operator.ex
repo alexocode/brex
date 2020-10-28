@@ -9,12 +9,13 @@ defmodule Brex.Operator do
   Creating a custom operator is merely a case of wrapping your rules into the
   `Brex.Operator` struct and providing your custom `aggregator` alongside.
 
-  ## Example
+  ## Examples
 
       %Brex.Operator{
         rules: [my_rule1, my_rule2],
         aggregator: my_aggregation_function # For example &Enum.all?/1
       }
+
   """
   use Brex.Rule.Struct
 

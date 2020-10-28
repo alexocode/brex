@@ -1,6 +1,7 @@
 defmodule Brex.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/sascha-wolf/brex"
   @version "version" |> File.read!() |> String.trim()
 
   def project do
@@ -19,11 +20,7 @@ defmodule Brex.Mixfile do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
-
-      # Docs
-      name: "Brex",
-      source_url: "https://github.com/sascha-wolf/brex",
-      homepage_url: "https://github.com/sascha-wolf/brex",
+      docs: docs(),
 
       # Hex
       description: description(),
@@ -32,18 +29,15 @@ defmodule Brex.Mixfile do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "spec/support"]
   defp elixirc_paths(_), do: ["lib"]
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       # No Runtime
@@ -71,9 +65,23 @@ defmodule Brex.Mixfile do
       files: ["lib", "mix.exs", "LICENSE*", "README*", "version"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/sascha-wolf/brex"
+        "Changelog" => "#{@source_url}/blob/main/CHANGELOG.md",
+        "GitHub" => @source_url
       },
       maintainers: ["Sascha Wolf <swolf.dev@gmail.com>"]
+    ]
+  end
+
+  def docs do
+    [
+      main: "readme",
+      source_ref: "v#{@source_url}",
+      source_url: @source_url,
+      homepage_url: @source_url,
+      extras: [
+        "README.md",
+        "CHANGELOG.md"
+      ]
     ]
   end
 end

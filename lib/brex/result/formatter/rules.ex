@@ -35,6 +35,7 @@ defmodule Brex.Result.Formatter.Rules do
       ** (ArgumentError) Invalid result! Expected a list of or single `Brex.Result` struct but received: [:foo]
           (brex) lib/brex/result/formatter.ex:45: Brex.Result.Formatter.invalid_result!/1
           (elixir) lib/enum.ex:1294: Enum."-map/2-lists^map/1-0-"/2
+
   """
 
   use Brex.Result.Formatter

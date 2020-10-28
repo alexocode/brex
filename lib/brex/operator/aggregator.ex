@@ -5,7 +5,7 @@ defmodule Brex.Operator.Aggregator do
   defdelegate any?(enum), to: Enum
 
   @doc """
-  # Examples
+  ## Examples
 
     iex> Brex.Operator.Aggregator.none?([])
     true
@@ -18,6 +18,7 @@ defmodule Brex.Operator.Aggregator do
 
     iex> Brex.Operator.Aggregator.none?([true, true, true])
     false
+
   """
   def none?([]), do: true
   def none?(enum), do: not any?(enum)

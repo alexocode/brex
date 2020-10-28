@@ -4,7 +4,7 @@ defmodule Brex.Result.Formatter do
   reduces them to whatever the formatter wants to.
 
   When "used" the module provides `format/1` definitions which handle a list of
-  `Brex.Result` structs and map them again to `format/1`. This defintions have
+  `Brex.Result` structs and map them again to `format/1`. This definitions have
   the lowest precedence and can be overridden as you see fit.
 
   The last `format/1` definition matches on anything and calls the imported

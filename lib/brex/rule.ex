@@ -24,6 +24,7 @@ defmodule Brex.Rule do
         @impl Brex.Rule
         def evaluate(_), do: false
       end
+
   """
   alias Brex.Types
 
@@ -74,6 +75,7 @@ defmodule Brex.Rule do
 
       iex> Brex.Rule.type("something")
       nil
+
   """
   @spec type(t()) :: module() | nil
   def type(rule), do: Evaluable.impl_for(rule)
@@ -93,6 +95,7 @@ defmodule Brex.Rule do
       iex> rules = [fn _ -> true end, Brex.any(fn _ -> false end, fn _ -> true end)]
       iex> Brex.Rule.number_of_clauses(rules)
       3
+
   """
   @spec number_of_clauses(t() | list(t())) :: non_neg_integer()
   def number_of_clauses(rules) when is_list(rules) do

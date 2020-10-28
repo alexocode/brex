@@ -11,7 +11,7 @@ defmodule Brex do
 
   business rules to dynamically drive the flow of your application.
 
-  # Basics
+  ## Basics
 
   The lowest building stone of `Brex` is a __rule__. A rule can
   have many shapes, for example this is a rule:
@@ -51,7 +51,7 @@ defmodule Brex do
   the `Brex.Rule.Evaluable` protocol, if you're really interested, take a look
   at `Brex.Rule` which talks about the possible rule types a little bit more.
 
-  # Operators
+  ## Operators
 
   Also, as you might have noticed, I used an `all/1` function in the examples
   above. It's called a `Brex.Operator` and represents the __compose__ part of
@@ -63,9 +63,9 @@ defmodule Brex do
   - `any/1`
   - `none/1`
 
-  I think the names speak for themself.
+  I think these names speak for themselves.
 
-  # More ...
+  ## More ...
 
   Apart from that, this module mainly serves as a utility belt for dealing with
   rules. It offers some functions to evaluate some rules, or to check if a given
@@ -90,7 +90,7 @@ defmodule Brex do
 
   Allows you to pass a list of rules which get linked calling `all/1`.
 
-  # Examples
+  ## Examples
 
       iex> Brex.satisfies? &is_list/1, []
       true
@@ -103,6 +103,7 @@ defmodule Brex do
 
       iex> Brex.satisfies? Brex.any(&is_list/1, &is_map/1), ""
       false
+
   """
   @spec satisfies?(one_or_many_rules(), value()) :: boolean()
   def satisfies?(rules, value) do
@@ -117,7 +118,7 @@ defmodule Brex do
 
   Allows you to pass a list of rules which get linked calling `all/1`.
 
-  # Examples
+  ## Examples
 
       iex> rule = &(length(&1) > 0)
       iex> result = Brex.evaluate(rule, [])
@@ -136,6 +137,7 @@ defmodule Brex do
       ...>   value: []
       ...> }, result
       true
+
   """
   @spec evaluate(one_or_many_rules(), value()) :: result()
   def evaluate(rules, value) do
@@ -155,7 +157,7 @@ defmodule Brex do
   @doc """
   Allows to reduce one or many `Brex.Result` to a simple `true` or `false` boolean.
 
-  # Examples
+  ## Examples
 
       iex> Brex.passed? %Brex.Result{evaluation: true}
       true
@@ -177,6 +179,7 @@ defmodule Brex do
 
       iex> Brex.passed?  %Brex.Result{evaluation: :unknown_evaluation}
       ** (FunctionClauseError) no function clause matching in Brex.Result.passed?/1
+
   """
   @spec passed?(one_or_many_results()) :: boolean()
   def passed?(results) do
@@ -190,13 +193,14 @@ defmodule Brex do
   when using operators and having to decide between some matching rules based on
   how specific they are.
 
-  # Examples
+  ## Examples
 
       iex> Brex.number_of_clauses &is_list/1
       1
 
       iex Brex.number_of_clauses Brex.none([&is_list/1, &is_map/1, &is_binary/1])
       3
+
   """
   @spec number_of_clauses(Types.rule()) :: non_neg_integer()
   defdelegate number_of_clauses(rule), to: Rule
@@ -209,7 +213,7 @@ defmodule Brex do
     - `any` one rule is sufficient to pass (`or` / `||`)
     - `none` of the rules may pass (`not` / `!`)
 
-    # Examples
+    ## Examples
 
         iex> Brex.#{operator} &is_list/1, &is_map/1
         %Brex.Operator{
@@ -222,6 +226,7 @@ defmodule Brex do
           aggregator: &Brex.Operator.Aggregator.#{operator}?/1,
           clauses: [&:erlang.is_list/1, &:erlang.is_map/1, &:erlang.is_binary/1]
         }
+
     """
   end
 

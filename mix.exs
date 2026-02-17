@@ -9,7 +9,6 @@ defmodule Brex.Mixfile do
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: [
-        espec: :test,
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
@@ -40,7 +39,7 @@ defmodule Brex.Mixfile do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "spec/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
@@ -55,15 +54,12 @@ defmodule Brex.Mixfile do
       # Test
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
-      {:espec, "~> 1.6", only: :test},
       {:ssl_verify_fun, "~> 1.1.7", only: :test, override: true}
     ]
   end
 
   def aliases do
-    [
-      test: "espec"
-    ]
+    []
   end
 
   def description do

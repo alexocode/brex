@@ -201,6 +201,40 @@ defmodule Brex do
   @spec number_of_clauses(Types.rule()) :: non_neg_integer()
   defdelegate number_of_clauses(rule), to: Rule
 
+  @doc """
+  Evaluates a rule and returns a `Tracer.t()` tree for visual inspection.
+
+  Equivalent to `evaluate/2` followed by `Brex.Trace.from_result/1`. Allows you
+  to pass a list of rules which get linked calling `all/1`.
+
+  The resulting `Tracer` can be rendered as a color-coded tree via `inspect/2`.
+  See `Brex.Trace` and `Tracer` for details on inspect options.
+
+  # Examples
+
+      iex> trace = Brex.trace(&is_list/1, [1, 2])
+      iex> Tracer.ok?(trace)
+      true
+
+      iex> trace = Brex.trace(Brex.all([&is_list/1, &Keyword.keyword?/1]), [a: 1])
+      iex> output = inspect(trace, custom_options: [depth: :infinity], syntax_colors: [])
+      iex> output =~ "Tracer<OK>"
+      true
+      iex> output =~ ":all"
+      true
+
+      iex> trace = Brex.trace(Brex.any([&is_list/1, &is_map/1]), "hello")
+      iex> output = inspect(trace, custom_options: [depth: :error], syntax_colors: [])
+      iex> output =~ "Tracer<ERROR>"
+      true
+  """
+  @spec trace(one_or_many_rules(), value()) :: Tracer.t()
+  def trace(rules, value) do
+    rules
+    |> evaluate(value)
+    |> Brex.Trace.from_result()
+  end
+
   operator_doc = fn operator ->
     """
     Links the given rules in a boolean fashion, similar to the `Enum` functions.

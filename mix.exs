@@ -47,7 +47,7 @@ defmodule Brex.Mixfile do
   defp deps do
     [
       # Runtime
-      {:tracer, path: "../tracer"},
+      {:tracer, github: "systemic-engineer/tracer"},
 
       # No Runtime
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},

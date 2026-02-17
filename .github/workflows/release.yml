@@ -5,17 +5,11 @@ on:
     types: [published]
 
 jobs:
-  publish_to_hex:
+  publish:
     name: Publish to Hex.pm
-    runs-on: ubuntu-latest
-    container: hexpm/elixir:1.10.3-erlang-22.1.8.1-alpine-3.11.6
-    steps:
-      - uses: actions/checkout@v2.3.1
-      - name: Install dependencies
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
-      - run: mix hex.publish --yes
-        env:
-          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+    uses: systemic-engineer/ci/.github/workflows/hex-publish.yml@main
+    with:
+      elixir-version: "1.18"
+      otp-version: "27.0"
+    secrets:
+      hex-api-key: ${{ secrets.HEX_API_KEY }}

@@ -46,13 +46,17 @@ defmodule Brex.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # Runtime
+      {:tracer, path: "../tracer"},
+
       # No Runtime
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
 
       # Test
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
-      {:espec, "~> 1.6", only: :test}
+      {:espec, "~> 1.6", only: :test},
+      {:ssl_verify_fun, "~> 1.1.7", only: :test, override: true}
     ]
   end
 

@@ -12,6 +12,7 @@ jobs:
     with:
       matrix: |
         [
+          {"elixir": "1.19", "otp": "28.0", "alpine": "3.21"},
           {"elixir": "1.18", "otp": "27.0", "alpine": "3.20"},
           {"elixir": "1.17", "otp": "27.0", "alpine": "3.20"},
           {"elixir": "1.16", "otp": "26.2", "alpine": "3.20"}

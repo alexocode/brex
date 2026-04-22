@@ -28,7 +28,9 @@ defmodule Brex.Rule.Struct do
     end
   end
 
-  def __after_compile__(%{module: module} = env, _bytecode) do
+  def __after_compile__(%{module: module} = env, bytecode) do
+    ensure_loaded!(module, bytecode)
+
     is_struct_module(module) ||
       raise CompileError,
         file: env.file,
@@ -42,6 +44,17 @@ defmodule Brex.Rule.Struct do
         line: env.line,
         description:
           "cannot use #{inspect(__MODULE__)} on module #{inspect(module)} without defining evaluate/2"
+  end
+
+  defp ensure_loaded!(module, bytecode) do
+    case Code.ensure_loaded(module) do
+      {:module, ^module} ->
+        :ok
+
+      {:error, _} ->
+        {:module, ^module} = :code.load_binary(module, ~c"nofile", bytecode)
+        :ok
+    end
   end
 
   defp is_struct_module(module) do
